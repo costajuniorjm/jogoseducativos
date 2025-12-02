@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plataforma de Jogos Educativos</title>
     <style>
         /* Estilos Globais */
@@ -17,6 +17,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            /* Previne comportamento de recarregar página ao puxar no mobile */
+            overscroll-behavior: none;
         }
 
         h1 {
@@ -141,6 +143,7 @@
             border: 3px solid #ffcc00;
             border-radius: 8px;
             transition: transform 0.2s, box-shadow 0.2s;
+            /* CRÍTICO PARA MOBILE: Impede rolagem ao arrastar */
             touch-action: none;
             display: flex;
             flex-direction: column;
@@ -201,7 +204,7 @@
             transform: scale(1.02);
         }
 
-        /* --- NOVO CSS PARA O JOGO 1: Conteúdo dentro da Caixa --- */
+        /* Conteúdo dentro da Caixa (Jogo 1) */
         .drop-target-content {
             display: flex;
             flex-wrap: wrap;
@@ -210,13 +213,13 @@
             margin-top: 15px;
             width: 100%;
             min-height: 20px;
-            background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil */
+            background-color: rgba(255, 255, 255, 0.1); 
             border-radius: 8px;
             padding: 5px;
         }
 
         .mini-animal-item {
-            width: 70px; /* Menor que o original */
+            width: 70px;
             background-color: white;
             border-radius: 5px;
             padding: 3px;
@@ -225,7 +228,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.7em; /* Texto menor */
+            font-size: 0.7em;
             text-align: center;
             animation: fadeIn 0.5s;
         }
@@ -237,14 +240,7 @@
             border-radius: 3px;
         }
         
-        /* Animação para feedback de sucesso */
-        @keyframes pulse-success {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); }
-            50% { transform: scale(1.01); box-shadow: 0 0 20px rgba(40, 167, 69, 0.8); }
-            100% { transform: scale(1); box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); }
-        }
-
-        /* Feedback de Acerto Aprimorado */
+        /* Feedback de Acerto */
         .correct-match {
             background-color: #43a047 !important; 
             border-color: #2e7d32 !important;
@@ -285,18 +281,16 @@
         }
         
         #btn-back-menu {
-            background-color: #f44336; /* Vermelho */
+            background-color: #f44336; 
             color: white;
         }
-        #btn-back-menu:hover { background-color: #d32f2f; }
         
         #btn-restart {
-            background-color: #ffc107; /* Amarelo */
+            background-color: #ffc107; 
             color: #333;
         }
-        #btn-restart:hover { background-color: #e0a800; }
 
-        /* --- ESTILOS ESPECÍFICOS DO JOGO 2 & 3 (DRAG & DROP EM TEXTO) --- */
+        /* --- ESTILOS JOGO 2 & 3 --- */
         #game2-content, #game3-content {
             display: flex;
             flex-direction: column;
@@ -304,7 +298,6 @@
             gap: 30px;
         }
         
-        /* Container das palavras arrastáveis (Opções) */
         .draggable-options-container {
             display: flex;
             flex-wrap: wrap; 
@@ -315,15 +308,16 @@
         }
 
         .drag-word {
-            padding: 10px 15px; /* Menor padding para caber mais palavras */
-            font-size: 1.2em; /* Menor fonte para caber mais palavras */
+            padding: 10px 15px;
+            font-size: 1.2em;
             font-weight: 900;
             color: white;
             border-radius: 8px;
             cursor: grab;
             transition: transform 0.1s;
             box-shadow: 0 3px #103a6e;
-            background-color: #2196F3; /* Azul */
+            background-color: #2196F3;
+            /* CRÍTICO PARA MOBILE */
             touch-action: none;
         }
 
@@ -357,7 +351,7 @@
 
         .drop-blank {
             display: inline-block;
-            min-width: 140px; /* Largura mínima para Doméstico/Silvestre */
+            min-width: 140px; 
             height: 1.6em;
             border-bottom: 4px solid #f9a03f;
             background-color: #ffffff;
@@ -373,7 +367,7 @@
         }
         
         .drop-blank-3 {
-            min-width: 100px; /* Largura menor para os produtos */
+            min-width: 100px; 
         }
 
         .drop-blank.drag-over {
@@ -393,12 +387,10 @@
             40%, 80% { transform: translateX(5px); }
         }
 
-        /* --- ESTILOS ESPECÍFICOS DO JOGO 4 (TRANSPORTES E PLACAS) --- */
-        
-        .btn-transportes { background-color: #0288d1; } /* Azul J4 */
+        /* --- ESTILOS JOGO 4 --- */
+        .btn-transportes { background-color: #0288d1; }
         .btn-transportes:hover { background-color: #039be5; }
-
-        .btn-placas { background-color: #d32f2f; } /* Vermelho J4 */
+        .btn-placas { background-color: #d32f2f; }
         .btn-placas:hover { background-color: #e53935; }
 
         #transportes-game-wrapper {
@@ -518,7 +510,7 @@
             font-family: inherit;
         }
 
-        /* --- ESTILOS ESPECÍFICOS DO JOGO 5 (ASSOCIAÇÃO DE MATERIAIS) --- */
+        /* --- ESTILOS JOGO 5 --- */
         #game5-view {
              border: 3px solid #1a73e8;
         }
@@ -640,7 +632,7 @@
             animation: pulse-correct 0.3s ease-in-out;
         }
 
-        /* --- ESTILOS DO JOGO 6 (ANTÔNIMOS) --- */
+        /* --- ESTILOS JOGO 6 --- */
         #game6-view {
             border: 4px solid #9C27B0;
             background-color: #f3e5f5;
@@ -708,7 +700,7 @@
             transition: transform 0.2s;
             font-weight: bold;
             border: 2px solid white;
-            touch-action: none; /* CRÍTICO PARA O ARRASTAR FUNCIONAR NO MOBILE */
+            touch-action: none; /* CRÍTICO PARA MOBILE */
         }
 
         .word-option-6:hover {
@@ -720,10 +712,10 @@
             cursor: grabbing;
         }
 
-        /* --- ESTILOS DO JOGO 7 (SINÔNIMOS) --- */
+        /* --- ESTILOS JOGO 7 --- */
         #game7-view {
             border: 4px solid #E91E63;
-            background-color: #fff0f5; /* Rosa claro */
+            background-color: #fff0f5; 
         }
 
         #synonyms-game-container {
@@ -765,7 +757,6 @@
             box-shadow: 0 6px 10px rgba(0,0,0,0.15);
         }
 
-        /* Estado inicial da Coluna 2 (Cinza/Branco) */
         .synonym-card.uncolored {
             background-color: #f5f5f5;
             color: #555;
@@ -773,7 +764,6 @@
             text-shadow: none;
         }
 
-        /* Estado Selecionado (Coluna 1) */
         .synonym-card.selected {
             transform: scale(1.1);
             border-color: #333;
@@ -781,7 +771,6 @@
             z-index: 10;
         }
 
-        /* Estado Correspondido (Bloqueado) */
         .synonym-card.matched {
             cursor: default;
             pointer-events: none;
@@ -789,7 +778,6 @@
             border-color: white;
         }
 
-        /* Animação de Erro */
         @keyframes shake-card {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
@@ -800,13 +788,12 @@
             animation: shake-card 0.4s ease-in-out;
         }
 
-        /* --- ESTILOS DO JOGO 8 (PRONOMES - ARRASTAR) --- */
+        /* --- ESTILOS JOGO 8 --- */
         #game8-view {
             border: 4px solid #009688;
             background-color: #e0f2f1;
         }
         
-        /* Layout Flexível para Jogo 8 */
         .game8-layout {
             display: flex;
             gap: 20px;
@@ -1042,7 +1029,7 @@
             <p class="instrucao">Vamos brincar com as palavras?</p>
             <div class="menu-buttons">
                 <button class="menu-button btn-game6" onclick="startGame6()">
-                    1. Antônimos: O Jogo dos Contrários↔️
+                    1. Antônimos: O Jogo dos Contrários ↔️
                 </button>
                 <button class="menu-button btn-game7" onclick="startGame7()">
                     2. Sinônimos: O Jogo dos Pares 🎨
@@ -1066,9 +1053,7 @@
             <div class="game-container">
                 <div class="coluna" id="drag-column-1">
                     <h2>Animais</h2>
-                    <div id="drag-items-container-1" class="drag-items-container">
-                        <!-- Itens gerados via JS -->
-                    </div>
+                    <div id="drag-items-container-1" class="drag-items-container"></div>
                 </div>
 
                 <div class="coluna" id="drop-column-1">
@@ -1203,7 +1188,6 @@
             <div class="score-board">Questão: <span id="current-q-8">1</span> / <span id="total-q-8">0</span></div>
 
             <div class="game8-layout">
-                <!-- Painel Esquerdo: Pergunta Ativa -->
                 <div class="game8-left-panel">
                     <div id="question-area-8">
                         <div class="sentence-box-8">
@@ -1212,7 +1196,6 @@
                         
                         <p style="margin-bottom: 5px; color: #555; font-weight: bold;">Banco de Pronomes:</p>
                         <div id="pronoun-bank-8" class="pronoun-bank">
-                            <!-- Pronomes Fixos -->
                             <div class="drag-pronoun" draggable="true" data-word="Eu">Eu</div>
                             <div class="drag-pronoun" draggable="true" data-word="Ele">Ele</div>
                             <div class="drag-pronoun" draggable="true" data-word="Ela">Ela</div>
@@ -1224,12 +1207,9 @@
                     <div id="feedback-8" style="height: 30px; margin: 10px; font-weight: bold; font-size: 1.2em;"></div>
                 </div>
 
-                <!-- Painel Direito: Lista de Frases Corretas -->
                 <div class="game8-right-panel">
                     <h3>Frases Completas ✅</h3>
-                    <ul id="completed-list-8">
-                        <!-- Itens adicionados dinamicamente -->
-                    </ul>
+                    <ul id="completed-list-8"></ul>
                 </div>
             </div>
 
@@ -1289,22 +1269,79 @@
     </div>
 
     <script>
-        // --- DADOS DOS JOGOS DE CIÊNCIAS (1, 2, 3) ---
+        // --- DADOS E LÓGICA DE TODOS OS JOGOS ---
+        // (Inclui os dados e funções atualizados para touch nos jogos 1, 2, 3)
 
-        // JOGO 1: ALIMENTAÇÃO (16 ITENS)
+        // --- LÓGICA DE NAVEGAÇÃO E UTILS ---
+        function showScreen(screenId) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => view.style.display = 'none');
+            const screen = document.getElementById(screenId);
+            if (screen) {
+                screen.style.display = 'block';
+            } else {
+                console.error("Screen not found: " + screenId);
+            }
+        }
+
+        function showMenu() {
+            gameActive = false;
+            currentGameId = 0;
+            showScreen('menu-view');
+        }
+
+        function showScienceMenu() { showScreen('science-menu-view'); }
+        function showPortugueseMenu() { showScreen('portuguese-menu-view'); }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- FUNÇÃO AUXILIAR PARA TOUCH DRAG & DROP ---
+        function addTouchSupport(element, onDropCallback) {
+            element.addEventListener('touchstart', (e) => {
+                e.target.style.opacity = '0.5';
+                document.body.style.overflow = 'hidden'; 
+            }, {passive: false});
+
+            element.addEventListener('touchend', (e) => {
+                e.target.style.opacity = '1';
+                document.body.style.overflow = 'auto'; 
+                
+                const touch = e.changedTouches[0];
+                const originalDisplay = e.target.style.display;
+                e.target.style.display = 'none'; // Esconde para detectar o elemento abaixo
+                
+                const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                e.target.style.display = originalDisplay;
+
+                const dropTarget = elemBelow ? elemBelow.closest('.drop-target, .drop-blank, .drop-zone-8') : null;
+
+                if (dropTarget) {
+                    onDropCallback(e.target, dropTarget);
+                }
+            });
+            
+            element.addEventListener('touchmove', (e) => {
+                e.preventDefault(); 
+            }, {passive: false});
+        }
+
+        // --- JOGO 1: ALIMENTAÇÃO ---
         const animals1 = [
-            // Herbívoros
             { name: "Capivara", group: "Herbívoro", file: "capivara.png" },
             { name: "Boi", group: "Herbívoro", file: "boi.png" },
             { name: "Cavalo", group: "Herbívoro", file: "cavalo.png" },
             { name: "Coelho", group: "Herbívoro", file: "coelho.png" },
             { name: "Rinoceronte", group: "Herbívoro", file: "rinoceronte.png" },
-            // Carnívoros
             { name: "Lobo", group: "Carnívoro", file: "lobo.png" },
             { name: "Leão", group: "Carnívoro", file: "leao.png" },
             { name: "Cobra", group: "Carnívoro", file: "cobra.png" },
             { name: "Coruja", group: "Carnívoro", file: "coruja.png" },
-            // Onívoros
             { name: "Galinha", group: "Onívoro", file: "galinha.png" },
             { name: "Porco", group: "Onívoro", file: "porco.png" },
             { name: "Pessoas", group: "Onívoro", file: "pessoas.png" },
@@ -1314,9 +1351,95 @@
             { name: "Cachorro Doméstico", group: "Onívoro", file: "cachorro.png" },
             { name: "Gato", group: "Onívoro", file: "gato.png" },
         ];
-        const totalItems1 = animals1.length;
-        
-        // JOGO 2: HISTÓRIAS (10 ITENS - Randomizados)
+        let totalItems1 = animals1.length;
+        let currentScore = 0;
+        let matchedItems = 0;
+        let gameActive = false;
+        let currentGameId = 0;
+
+        function startGame1() {
+            currentGameId = 1;
+            showScreen('game1-view');
+            gameActive = true;
+            currentScore = 0;
+            matchedItems = 0;
+            document.getElementById('current-score-1').textContent = 0;
+            document.querySelectorAll('.drop-target-content').forEach(box => box.innerHTML = '');
+            document.querySelectorAll('#drop-column-1 .drop-target').forEach(t => t.classList.remove('correct-match'));
+
+            const container = document.getElementById('drag-items-container-1');
+            container.innerHTML = '';
+            
+            shuffle([...animals1]).forEach((animal, index) => {
+                const item = document.createElement('div');
+                item.className = 'drag-item';
+                item.id = `game1-animal-${index}`;
+                item.draggable = true;
+                item.dataset.group = animal.group;
+                item.innerHTML = `<img src="${animal.file}" alt="${animal.name}"><span>${animal.name}</span>`;
+                container.appendChild(item);
+                
+                // Mouse Drag
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    item.style.opacity = '0.4';
+                });
+                item.addEventListener('dragend', () => item.style.opacity = '1');
+
+                // Touch Drag
+                addTouchSupport(item, (draggedItem, target) => {
+                    handleDropGame1(draggedItem, target);
+                });
+            });
+
+            // Drop Zones (Mouse)
+            const targets = document.querySelectorAll('#drop-column-1 .drop-target');
+            targets.forEach(target => {
+                target.addEventListener('dragover', (e) => { e.preventDefault(); target.style.transform = 'scale(1.02)'; });
+                target.addEventListener('dragleave', () => target.style.transform = 'scale(1)');
+                target.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    target.style.transform = 'scale(1)';
+                    const id = e.dataTransfer.getData('text/plain');
+                    const item = document.getElementById(id);
+                    handleDropGame1(item, target);
+                });
+            });
+        }
+
+        function handleDropGame1(item, target) {
+            if (!item || !target || !gameActive) return;
+            
+            const itemGroup = item.dataset.group;
+            const targetGroup = target.dataset.target;
+
+            if (itemGroup === targetGroup) {
+                // Acerto
+                currentScore++;
+                matchedItems++;
+                document.getElementById('current-score-1').textContent = currentScore;
+                
+                item.style.visibility = 'hidden'; // Esconde original
+                
+                // Cria miniatura
+                const mini = document.createElement('div');
+                mini.className = 'mini-animal-item';
+                mini.innerHTML = item.innerHTML;
+                target.querySelector('.drop-target-content').appendChild(mini);
+                
+                target.classList.add('correct-match');
+                setTimeout(() => target.classList.remove('correct-match'), 500);
+
+                if (matchedItems === totalItems1) showEndGameModal(totalItems1);
+            } else {
+                // Erro
+                item.style.border = '3px solid #dc3545';
+                setTimeout(() => item.style.border = '3px solid #ffcc00', 500);
+            }
+        }
+
+        // --- JOGOS 2 & 3 ---
+        // Funções auxiliares para Histórias e Produtos (adaptados com touch)
         const stories2 = [
             { animal: "Leão", type: "Silvestre", hint: "vive livremente na savana, caçando zebras e búfalos.", file: "leao.png" },
             { animal: "Cachorro Doméstico", type: "Doméstico", hint: "vive em nossas casas e depende de nós para comida e carinho.", file: "cachorro.png" },
@@ -1329,59 +1452,154 @@
             { animal: "Coelho", type: "Doméstico", hint: "pode ser criado em gaiolas em casa, comendo cenouras e feno.", file: "coelho.png" },
             { animal: "Rinoceronte", type: "Silvestre", hint: "é um animal grande e pesado que vive solto na natureza, em risco de extinção.", file: "rinoceronte.png" },
         ];
-        const totalStories2 = stories2.length; // 10 histórias
-
-        // JOGO 3: PRODUTOS DOS ANIMAIS (5 Histórias, 11 Gaps no total)
         const productsData3 = [
-            { 
-                animal: "Abelha", 
-                file: "abelha.png", 
-                story: "A abelha voa entre as flores para colher o néctar e nos dá o [Mel], além de [Cera] para fazer velas e outros produtos.", 
-                products: ["Mel", "Cera"] 
-            },
-            { 
-                animal: "Ovelha", 
-                file: "ovelha.png", 
-                story: "A ovelha tem um pelo macio que é tosado. Com ele, fazemos o fio de [Lã] para roupas quentinhas.", 
-                products: ["Lã"] 
-            },
-            { 
-                animal: "Boi", 
-                file: "boi.png", 
-                story: "O boi é muito útil! Nos fornece o [Leite], a [Carne], o [Couro] para sapatos e bolsas, e até o [Chifre] para artesanato.", 
-                products: ["Leite", "Carne", "Couro", "Chifre"] 
-            },
-            { 
-                animal: "Porco", 
-                file: "porco.png", 
-                story: "O porco é aproveitado totalmente. Dele, tiramos a [Carne] que comemos, e também a [Gordura] para cozinhar.", 
-                products: ["Carne", "Gordura"] 
-            },
-            { 
-                animal: "Tubarão", 
-                file: "tubarao.png", 
-                story: "O tubarão, que vive no mar, é usado para fazer [Óleo] e a sua [Barbatana] é usada em alguns lugares para fazer remédio.", 
-                products: ["Óleo", "Barbatana"] 
-            },
+            { animal: "Abelha", file: "abelha.png", story: "A abelha voa entre as flores para colher o néctar e nos dá o [Mel], além de [Cera] para fazer velas e outros produtos.", products: ["Mel", "Cera"] },
+            { animal: "Ovelha", file: "ovelha.png", story: "A ovelha tem um pelo macio que é tosado. Com ele, fazemos o fio de [Lã] para roupas quentinhas.", products: ["Lã"] },
+            { animal: "Boi", file: "boi.png", story: "O boi é muito útil! Nos fornece o [Leite], a [Carne], o [Couro] para sapatos e bolsas, e até o [Chifre] para artesanato.", products: ["Leite", "Carne", "Couro", "Chifre"] },
+            { animal: "Porco", file: "porco.png", story: "O porco é aproveitado totalmente. Dele, tiramos a [Carne] que comemos, e também a [Gordura] para cozinhar.", products: ["Carne", "Gordura"] },
+            { animal: "Tubarão", file: "tubarao.png", story: "O tubarão, que vive no mar, é usado para fazer [Óleo] e a sua [Barbatana] é usada em alguns lugares para fazer remédio.", products: ["Óleo", "Barbatana"] },
         ];
-        
-        // Lista total de produtos (palavras arrastáveis)
         const allProducts = ["Mel", "Cera", "Lã", "Leite", "Carne", "Couro", "Chifre", "Gordura", "Óleo", "Barbatana"];
-        const totalStories3 = productsData3.length;
-        
-        let totalGaps3 = 0;
-        productsData3.forEach(data => totalGaps3 += data.products.length); // 11 Gaps
 
-        // --- VARIÁVEIS DE ESTADO GLOBAL (COMPARTILHADAS JOGOS 1, 2, 3) ---
-        let currentScore = 0;
-        let matchedItems = 0;
-        let gameActive = false;
-        let currentGameId = 0; // 1 para Jogo 1, 2 para Jogo 2, 3 para Jogo 3, 4 para Jogo 4
-        let currentStoryIndex2 = 0; // Índice atual para Jogo 2
-        let unansweredStories3 = []; // Fila de histórias não respondidas para o Jogo 3
+        let currentStoryIndex2 = 0;
+        let unansweredStories3 = [];
+        let totalStories2 = stories2.length;
+        let totalGaps3 = 11;
 
+        function startGame2() {
+            currentGameId = 2;
+            showScreen('game2-view');
+            gameActive = true;
+            currentScore = 0;
+            currentStoryIndex2 = 0;
+            document.getElementById('current-score-2').textContent = 0;
+            stories2.sort(() => Math.random() - 0.5); 
+            loadStory2();
+        }
 
-        // --- DADOS DO JOGO 4: TRANSPORTES E PLACAS ---
+        function loadStory2() {
+            const container = document.getElementById('current-story-text-2');
+            if (currentStoryIndex2 < totalStories2) {
+                const story = stories2[currentStoryIndex2];
+                document.getElementById('current-animal-image-2').src = story.file;
+                document.getElementById('current-animal-image-2').style.display = 'block';
+                const blankHtml = `<span class="drop-blank" data-answer="${story.type}"></span>`;
+                container.innerHTML = `O <b>${story.animal}</b>, ${story.hint} Por isso, ele é um animal: ${blankHtml}.`;
+                
+                setupStoryDrag(2);
+            } else {
+                showEndGameModal(totalStories2);
+            }
+        }
+
+        function startGame3() {
+            currentGameId = 3;
+            showScreen('game3-view');
+            gameActive = true;
+            currentScore = 0;
+            document.getElementById('current-score-3').textContent = 0;
+            unansweredStories3 = shuffle([...productsData3]);
+            loadStory3();
+        }
+
+        function loadStory3() {
+            const container = document.getElementById('current-story-text-3');
+            if (unansweredStories3.length > 0) {
+                const story = unansweredStories3[0];
+                document.getElementById('current-animal-image-3').src = story.file;
+                document.getElementById('current-animal-image-3').style.display = 'block';
+                
+                let html = story.story;
+                story.products.forEach(p => {
+                    html = html.replace(`[${p}]`, `<span class="drop-blank drop-blank-3" data-answer="${p}"></span>`);
+                });
+                container.innerHTML = html;
+
+                // Gerar opções
+                const optionsCont = document.querySelector('#game3-content .draggable-options-container');
+                optionsCont.innerHTML = '';
+                shuffle([...allProducts]).forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'drag-word';
+                    div.draggable = true;
+                    div.dataset.word = p;
+                    div.innerText = p;
+                    optionsCont.appendChild(div);
+                });
+
+                setupStoryDrag(3);
+            } else {
+                showEndGameModal(totalGaps3);
+            }
+        }
+
+        function setupStoryDrag(gameId) {
+            const words = document.querySelectorAll(gameId === 2 ? '#draggable-options-2 .drag-word' : '#draggable-options-3 .drag-word');
+            const blanks = document.querySelectorAll(gameId === 2 ? '#story-container-2 .drop-blank' : '#story-container-3 .drop-blank');
+
+            words.forEach(word => {
+                word.addEventListener('dragstart', (e) => e.dataTransfer.setData('text', word.dataset.word));
+                // Touch
+                addTouchSupport(word, (draggedItem, target) => {
+                    handleStoryDrop(draggedItem.dataset.word, target, gameId, draggedItem);
+                });
+            });
+
+            blanks.forEach(blank => {
+                blank.addEventListener('dragover', (e) => { e.preventDefault(); blank.classList.add('drag-over'); });
+                blank.addEventListener('dragleave', () => blank.classList.remove('drag-over'));
+                blank.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    blank.classList.remove('drag-over');
+                    const text = e.dataTransfer.getData('text');
+                    handleStoryDrop(text, blank, gameId);
+                });
+            });
+        }
+
+        function handleStoryDrop(word, blank, gameId, draggedElement = null) {
+            if (blank.dataset.filled === 'true') return;
+
+            if (word === blank.dataset.answer) {
+                // Acerto
+                currentScore++;
+                document.getElementById(`current-score-${gameId}`).textContent = currentScore;
+                blank.innerText = word;
+                blank.classList.add('correct');
+                blank.dataset.filled = 'true';
+                
+                // Se foi arraste de toque no jogo 3, esconde a palavra usada (opcional, mas bom pra UX)
+                if(gameId === 3 && draggedElement) draggedElement.style.opacity = '0.3';
+
+                // Check completion
+                const allBlanks = document.querySelectorAll(gameId === 2 ? '#story-container-2 .drop-blank' : '#story-container-3 .drop-blank');
+                const filled = Array.from(allBlanks).every(b => b.dataset.filled === 'true');
+                
+                if (filled) {
+                    setTimeout(() => {
+                        if (gameId === 2) { currentStoryIndex2++; loadStory2(); }
+                        else { unansweredStories3.shift(); loadStory3(); }
+                    }, 1000);
+                }
+            } else {
+                blank.style.animation = 'shake 0.4s';
+                setTimeout(() => blank.style.animation = '', 400);
+            }
+        }
+
+        function skipStory3() {
+            if (unansweredStories3.length > 1) {
+                unansweredStories3.push(unansweredStories3.shift());
+                loadStory3();
+            }
+        }
+
+        function showEndGameModal(total) {
+            alert(`Parabéns! Você completou o jogo com ${currentScore}/${total} pontos!`);
+            showMenu();
+        }
+
+        // --- JOGO 4: TRANSPORTES E PLACAS ---
         const dadosTransportes4 = [
             { p: "Guga precisa levar cargas pesadas. Qual veículo terrestre grande ele usa?", r: "Caminhão", alts: ["Bicicleta", "Caminhão", "Carro"], img: "caminhao.png" },
             { p: "Veículo aéreo, sem asas, mas com hélices. Qual é?", r: "Helicóptero", alts: ["Avião", "Helicóptero", "Balsa"], img: "helicoptero.png" },
@@ -1402,14 +1620,108 @@
             { p: "Esta placa amarela avisa para ter cuidado com...", r: "Pedestres", alts: ["Animais", "Pedestres", "Buracos"], img: "placa_faixa.png" }
         ];
 
-        // Variáveis de estado Jogo 4
         let perguntasAtuais4 = [];
         let indiceAtual4 = 0;
         let pontuacao4 = 0;
         let modoAtual4 = ""; 
-        
-        // --- DADOS E VARIÁVEIS DO JOGO 5: ORIGEM DOS MATERIAIS ---
-        // ATUALIZADO: Imagens locais (.png)
+
+        function startGame4() {
+            currentGameId = 4;
+            showScreen('game4-view');
+            voltarAoMenuJ4(); 
+        }
+
+        function voltarAoMenuJ4() {
+            document.getElementById('menu-inicial-4').style.display = 'block';
+            document.getElementById('tela-jogo-4').style.display = 'none';
+            document.getElementById('tela-fim-4').style.display = 'none';
+        }
+
+        function iniciarModoJ4(modo) {
+            modoAtual4 = modo;
+            pontuacao4 = 0;
+            indiceAtual4 = 0;
+            if (modo === 'transportes') {
+                perguntasAtuais4 = shuffle(dadosTransportes4);
+                document.getElementById('titulo-modo-4').innerText = "Modo: Veículos 🚗";
+            } else {
+                perguntasAtuais4 = shuffle(dadosPlacas4);
+                document.getElementById('titulo-modo-4').innerText = "Modo: Placas 🛑";
+            }
+            document.getElementById('menu-inicial-4').style.display = 'none';
+            document.getElementById('tela-jogo-4').style.display = 'block';
+            document.getElementById('tela-fim-4').style.display = 'none';
+            renderizarPerguntaJ4();
+        }
+
+        function renderizarPerguntaJ4() {
+            const dados = perguntasAtuais4[indiceAtual4];
+            document.getElementById('texto-pergunta-4').innerText = dados.p;
+            const imgEl = document.getElementById('imagem-jogo-4');
+            if (modoAtual4 === 'placas') {
+                imgEl.src = dados.img;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.style.display = 'none';
+                imgEl.src = dados.img;
+            }
+            document.getElementById('feedback-4').innerText = "";
+            document.getElementById('btn-proxima-4').style.display = 'none';
+            const divBotoes = document.getElementById('lista-botoes-4');
+            divBotoes.innerHTML = "";
+            const alternativas = shuffle(dados.alts);
+            alternativas.forEach(alt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-resposta-4';
+                btn.innerText = alt;
+                btn.onclick = function() { checarRespostaJ4(alt, dados.r, btn); }; 
+                divBotoes.appendChild(btn);
+            });
+        }
+
+        function checarRespostaJ4(escolha, correta, elementoBotao) {
+            const todosBotoes = document.querySelectorAll('.btn-resposta-4');
+            todosBotoes.forEach(b => b.disabled = true);
+            const feedback = document.getElementById('feedback-4');
+            if (escolha === correta) {
+                pontuacao4++;
+                feedback.innerHTML = "<span style='color:green'>🎉 Muito bem! Acertou!</span>";
+                elementoBotao.style.backgroundColor = "#c8e6c9"; 
+                elementoBotao.style.borderColor = "green";
+            } else {
+                feedback.innerHTML = "<span style='color:red'>❌ Ops! A resposta certa era: " + correta + "</span>";
+                elementoBotao.style.backgroundColor = "#ffcdd2"; 
+                elementoBotao.style.borderColor = "red";
+            }
+            if (modoAtual4 === 'transportes') {
+                const imgEl = document.getElementById('imagem-jogo-4');
+                imgEl.style.display = 'block';
+            }
+            document.getElementById('btn-proxima-4').style.display = 'inline-block';
+        }
+
+        function proximaPerguntaJ4() {
+            indiceAtual4++;
+            if (indiceAtual4 < perguntasAtuais4.length) {
+                renderizarPerguntaJ4();
+            } else {
+                finalizarJogoJ4();
+            }
+        }
+
+        function finalizarJogoJ4() {
+            document.getElementById('tela-jogo-4').style.display = 'none';
+            document.getElementById('tela-fim-4').style.display = 'block';
+            const total = perguntasAtuais4.length;
+            document.getElementById('texto-pontuacao-4').innerText = `Você acertou ${pontuacao4} de ${total}!`;
+            let msg = "";
+            if (pontuacao4 === total) msg = "Uau! Você sabe tudo de trânsito! 🏆";
+            else if (pontuacao4 > total / 2) msg = "Mandou muito bem! Continue assim! 👏";
+            else msg = "Foi legal! Que tal tentar de novo para aprender mais? 😉";
+            document.getElementById('mensagem-final-4').innerText = msg;
+        }
+
+        // --- JOGO 5: ORIGEM DOS MATERIAIS ---
         const materiais5 = [
             { id: 1, name: "Madeira", category: "Vegetal", imageAlt: "Tronco de árvore", imageUrl: "madeira.png" },
             { id: 2, name: "Lã", category: "Animal", imageAlt: "Fios de lã de ovelha", imageUrl: "la.png" },
@@ -1432,719 +1744,17 @@
         let pontuacao5 = 0;
         let selectedMaterialId5 = null;
 
-        // --- DADOS DO JOGO 6: ANTÔNIMOS ---
-        const antonymsData = [
-            { w: "Bonito", a: "Feio", s: "O jardim é <span class='highlight-word'>bonito</span>, mas o lixão é ______.", d: ["Cheiroso", "Feio", "Colorido"] },
-            { w: "Cheio", a: "Vazio", s: "O copo estava <span class='highlight-word'>cheio</span>, agora está ______.", d: ["Quente", "Largo", "Vazio"] },
-            { w: "Transparente", a: "Opaco", s: "O vidro é <span class='highlight-word'>transparente</span>, mas o tijolo é ______.", d: ["Opaco", "Brilhante", "Mole"] },
-            { w: "Salgado", a: "Doce", s: "O salgadinho é <span class='highlight-word'>salgado</span>, o bolo é ______.", d: ["Doce", "Azedo", "Frio"] },
-            { w: "Fraco", a: "Forte", s: "O gatinho é <span class='highlight-word'>fraco</span>, mas o leão é ______.", d: ["Lento", "Forte", "Triste"] },
-            { w: "Largo", a: "Estreito", s: "O rio é <span class='highlight-word'>largo</span>, mas o riacho é ______.", d: ["Estreito", "Alto", "Rápido"] },
-            { w: "Bem", a: "Mal", s: "O herói se comportou <span class='highlight-word'>bem</span>, mas o vilão se comportou ______.", d: ["Feliz", "Mal", "Rápido"] },
-            { w: "Lento", a: "Rápido", s: "O caracol é <span class='highlight-word'>lento</span>, mas o coelho é ______.", d: ["Alto", "Rápido", "Verde"] },
-            { w: "Comprido", a: "Curto", s: "O trem é <span class='highlight-word'>comprido</span>, mas o fusca é ______.", d: ["Curto", "Belo", "Gordo"] },
-            { w: "Muito", a: "Pouco", s: "Eu tenho <span class='highlight-word'>muito</span> sono, mas tenho ______ tempo.", d: ["Longo", "Pouco", "Grande"] },
-            { w: "Pequeno", a: "Grande", s: "O rato é <span class='highlight-word'>pequeno</span>, mas o elefante é ______.", d: ["Grande", "Fino", "Rápido"] },
-            { w: "Vitória", a: "Derrota", s: "O time comemorou a <span class='highlight-word'>vitória</span> e o outro chorou a ______.", d: ["Festa", "Alegria", "Derrota"] },
-            { w: "Mole", a: "Duro", s: "O travesseiro é <span class='highlight-word'>mole</span>, mas o chão é ______.", d: ["Duro", "Fino", "Liso"] },
-            { w: "Claro", a: "Escuro", s: "O dia é <span class='highlight-word'>claro</span>, mas o túnel é ______.", d: ["Frio", "Escuro", "Belo"] },
-            { w: "Liso", a: "Áspero", s: "O piso encerado é <span class='highlight-word'>liso</span>, o cimento é ______.", d: ["Áspero", "Mole", "Fino"] },
-            { w: "Achar", a: "Perder", s: "É bom <span class='highlight-word'>achar</span> uma moeda, mas é ruim ______.", d: ["Gastar", "Perder", "Ganhar"] },
-            { w: "Fino", a: "Grosso", s: "O fio de cabelo é <span class='highlight-word'>fino</span>, mas o tronco da árvore é ______.", d: ["Grosso", "Alto", "Mole"] },
-            { w: "Raso", a: "Fundo", s: "O prato de sobremesa é <span class='highlight-word'>raso</span>, mas o balde é ______.", d: ["Quente", "Fundo", "Largo"] }
-        ];
-
-        let questions6 = [];
-        let currentQIndex6 = 0;
-
-        // --- DADOS DO JOGO 7: SINÔNIMOS ---
-        const synonymsData = [
-            { a: "Longe", b: "Distante" },
-            { a: "Ouvir", b: "Escutar" },
-            { a: "Garoto", b: "Menino" },
-            { a: "Pular", b: "Saltar" },
-            { a: "Alegre", b: "Contente" },
-            { a: "Próximo", b: "Perto" },
-            { a: "Gostoso", b: "Saboroso" },
-            { a: "Acabar", b: "Finalizar" },
-            { a: "Início", b: "Começo" },
-            { a: "Perfume", b: "Aroma" }
-        ];
-
-        // 10 Cores Distintas para os pares
-        const synonymColors = [
-            "#F44336", // Vermelho
-            "#E91E63", // Rosa
-            "#9C27B0", // Roxo
-            "#3F51B5", // Indigo
-            "#2196F3", // Azul
-            "#009688", // Verde Água
-            "#4CAF50", // Verde
-            "#FBC02D", // Amarelo Escuro
-            "#FF9800", // Laranja
-            "#795548"  // Marrom
-        ];
-
-        let selectedCardCol1_7 = null; // { id, color }
-        let currentScore7 = 0;
-
-        // --- DADOS DO JOGO 8: PRONOMES ---
-        // Atualizado com contexto claro para evitar ambiguidade
-        const pronounsRealData = [
-            { s: "Julia e [BLANK] fomos ao cinema.", a: ["Eu"], full: "Julia e <strong>Eu</strong> fomos ao cinema." },
-            { s: "João é escritor. [BLANK] escreve muitos livros.", a: ["Ele"], full: "João é escritor. <strong>Ele</strong> escreve muitos livros." },
-            { s: "[BLANK] comi um bolo e a Ana estava cansada, então [BLANK] dormiu.", a: ["Eu", "Ela"], full: "<strong>Eu</strong> comi um bolo e a Ana estava cansada, então <strong>Ela</strong> dormiu." },
-            { s: "José foi passear. [BLANK] foi à praia.", a: ["Ele"], full: "José foi passear. <strong>Ele</strong> foi à praia." },
-            { s: "José e Marina foram ao Parque. [BLANK] brincaram muito.", a: ["Eles"], full: "José e Marina foram ao Parque. <strong>Eles</strong> brincaram muito." },
-            { s: "Mamãe tomou café. [BLANK] está muito feliz.", a: ["Ela"], full: "Mamãe tomou café. <strong>Ela</strong> está muito feliz." },
-            { s: "Eu adoro esportes. [BLANK] gosto de jogar bola.", a: ["Eu"], full: "Eu adoro esportes. <strong>Eu</strong> gosto de jogar bola." },
-            { s: "Eu e você somos um time. [BLANK] vamos ganhar o jogo.", a: ["Nós"], full: "Eu e você somos um time. <strong>Nós</strong> vamos ganhar o jogo." },
-            { s: "As meninas dançam balé. [BLANK] são muito talentosas.", a: ["Elas"], full: "As meninas dançam balé. <strong>Elas</strong> são muito talentosas." },
-            { s: "O gato miou alto. [BLANK] quer beber leite.", a: ["Ele"], full: "O gato miou alto. <strong>Ele</strong> quer beber leite." },
-            { s: "Bia é estudiosa. [BLANK] tira boas notas na escola.", a: ["Ela"], full: "Bia é estudiosa. <strong>Ela</strong> tira boas notas na escola." },
-            { s: "[BLANK] e meu irmão somos grandes amigos.", a: ["Eu"], full: "<strong>Eu</strong> e meu irmão somos grandes amigos." },
-            { s: "Os meninos correram na rua. [BLANK] chegaram cansados.", a: ["Eles"], full: "Os meninos correram na rua. <strong>Eles</strong> chegaram cansados." },
-            { s: "[BLANK] fui ao mercado e o vovô disse que [BLANK] ficou em casa.", a: ["Eu", "Ele"], full: "<strong>Eu</strong> fui ao mercado e o vovô disse que <strong>Ele</strong> ficou em casa." },
-            { s: "A flor murchou no vaso. [BLANK] precisava de mais água.", a: ["Ela"], full: "A flor murchou no vaso. <strong>Ela</strong> precisava de mais água." },
-            { s: "Ana e Bia cantaram no show. [BLANK] são ótimas cantoras.", a: ["Elas"], full: "Ana e Bia cantaram no show. <strong>Elas</strong> são ótimas cantoras." }
-        ];
-
-        let questions8 = [];
-        let currentQIndex8 = 0;
-
-
-        // --- LÓGICA DE NAVEGAÇÃO E UTILS ---
-
-        function showScreen(screenId) {
-            const views = document.querySelectorAll('.view');
-            views.forEach(view => {
-                view.style.display = 'none';
-            });
-            // Verificação de segurança
-            const screen = document.getElementById(screenId);
-            if (screen) {
-                screen.style.display = 'block';
-            } else {
-                console.error("Screen not found: " + screenId);
-            }
-        }
-
-        function showMenu() {
-            gameActive = false;
-            currentGameId = 0;
-            showScreen('menu-view');
-        }
-
-        function showScienceMenu() {
-            showScreen('science-menu-view');
-        }
-
-        function showPortugueseMenu() {
-            showScreen('portuguese-menu-view');
-        }
-
-        function showPlaceholder(gameName) {
-            alert("Jogo em construção: " + gameName);
-        }
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        
-        // --- LÓGICA DO JOGO 1 (DRAG & DROP - ALIMENTAÇÃO) ---
-
-        // Função genérica para configurar o jogo 1 (Drag & Drop)
-        function setupGame1(animalData, totalItemsCount) {
-            currentGameId = 1;
-            showScreen(`game1-view`);
-            gameActive = true;
-            
-            // 1. Reinicializa a pontuação
-            currentScore = 0;
-            matchedItems = 0;
-            document.getElementById(`current-score-1`).textContent = currentScore;
-            
-            // Atualiza o total de itens no placar 
-            document.querySelector(`#score-board-1`).innerHTML = `Pontos: <span id="current-score-1">0</span> / ${totalItemsCount}`;
-
-            const dragItemsContainer = document.getElementById(`drag-items-container-1`); 
-            dragItemsContainer.innerHTML = ''; 
-            
-            // Limpa as caixas de destino
-            document.querySelectorAll('.drop-target-content').forEach(box => box.innerHTML = '');
-
-            // 2. Remove classes de acerto e reseta alvos
-            document.querySelectorAll(`#drop-column-1 .drop-target`).forEach(target => {
-                target.classList.remove('correct-match');
-            });
-
-            // 3. Embaralha e cria os elementos de imagem
-            const shuffledAnimals = shuffle([...animalData]);
-
-            shuffledAnimals.forEach((animal, index) => {
-                const dragItem = document.createElement('div');
-                dragItem.className = 'drag-item';
-                dragItem.id = `game1-animal-${index}`; // ID específico do jogo
-                dragItem.setAttribute('draggable', 'true');
-                dragItem.setAttribute('data-group', animal.group);
-                dragItem.classList.remove('matched-image'); 
-                dragItem.style.border = '3px solid #ffcc00'; 
-                dragItem.style.visibility = 'visible'; // Garante que está visível no reset
-
-                const img = document.createElement('img');
-                img.src = animal.file;
-                img.alt = animal.name;
-                img.onerror = function() {
-                    this.style.display = 'none';
-                    const span = this.parentElement.querySelector('span');
-                    if (span) span.textContent = `[Falta a imagem: ${animal.name}]`;
-                };
-
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = animal.name;
-
-                dragItem.appendChild(img);
-                dragItem.appendChild(nameSpan);
-                dragItemsContainer.appendChild(dragItem);
-            });
-
-            // 4. Adiciona os event listeners de drag
-            addDragListeners(1, totalItemsCount);
-        }
-
-        function startGame1() {
-            setupGame1(animals1, totalItems1);
-        }
-
-        // Adiciona os eventos de Arrastar e Soltar (Jogo 1)
-        function addDragListeners(gameId, totalItemsCount) {
-            const dragItemsContainer = document.getElementById(`drag-items-container-${gameId}`);
-            const dragItems = dragItemsContainer.querySelectorAll('.drag-item[draggable="true"]');
-            
-            // Seleciona os alvos atuais
-            const oldDropTargets = document.querySelectorAll(`#drop-column-1 .drop-target`);
-            
-            let draggedItem = null;
-
-            // Eventos de arrastar (nos itens)
-            dragItems.forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    draggedItem = e.target;
-                    e.dataTransfer.setData('text/plain', e.target.id);
-                    e.target.style.opacity = '0.4';
-                });
-
-                item.addEventListener('dragend', (e) => {
-                    e.target.style.opacity = '1';
-                });
-            });
-
-            // Eventos de soltar (nos alvos)
-            // CORREÇÃO: Clonamos os elementos alvo para remover listeners acumulados de jogos anteriores
-            oldDropTargets.forEach(oldTarget => {
-                const target = oldTarget.cloneNode(true);
-                oldTarget.parentNode.replaceChild(target, oldTarget);
-
-                target.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    target.style.transform = 'scale(1.04)'; 
-                });
-
-                target.addEventListener('dragleave', (e) => {
-                    target.style.transform = 'scale(1)'; 
-                });
-
-                target.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    target.style.transform = 'scale(1)'; 
-                    
-                    if (!gameActive || currentGameId !== gameId) return; 
-
-                    const itemId = e.dataTransfer.getData('text/plain');
-                    const droppedItem = document.getElementById(itemId);
-                    
-                    // Verifica se o item existe e se ainda é arrastável (evita duplicação)
-                    if (droppedItem && droppedItem.getAttribute('draggable') === 'true') {
-                        const droppedItemGroup = droppedItem.getAttribute('data-group');
-                        const targetGroup = target.getAttribute('data-target');
-
-                        if (droppedItemGroup === targetGroup) {
-                            // Acerto!
-                            // Desativa imediatamente para evitar múltiplos drops
-                            droppedItem.setAttribute('draggable', 'false');
-                            
-                            currentScore++;
-                            matchedItems++;
-                            document.getElementById(`current-score-${gameId}`).textContent = currentScore;
-
-                            // Lógica de Movimentação para a Caixa
-                            droppedItem.style.visibility = 'hidden'; // Esconde o original
-                            
-                            // Cria a miniatura dentro da caixa
-                            const miniItem = document.createElement('div');
-                            miniItem.className = 'mini-animal-item';
-                            // Clona o conteúdo interno (imagem e texto)
-                            miniItem.innerHTML = droppedItem.innerHTML;
-                            
-                            // Adiciona ao container correto dentro do alvo
-                            const contentBox = target.querySelector('.drop-target-content');
-                            contentBox.appendChild(miniItem);
-
-                            // Feedback visual no alvo
-                            target.classList.add('correct-match');
-                            setTimeout(() => target.classList.remove('correct-match'), 500);
-
-                            if (matchedItems === totalItemsCount) {
-                                // Exibe modal de parabéns
-                                showEndGameModal(totalItemsCount);
-                                gameActive = false;
-                            }
-                        } else {
-                            // Erro - feedback visual de erro
-                            droppedItem.style.transition = 'transform 0.1s, border-color 0.1s';
-                            droppedItem.style.border = '3px solid #dc3545'; 
-
-                            setTimeout(() => {
-                                // Só restaura a borda se o item ainda não foi movido corretamente
-                                if (droppedItem.getAttribute('draggable') === 'true') {
-                                    droppedItem.style.border = '3px solid #ffcc00';
-                                }
-                                droppedItem.style.transition = 'transform 0.2s, box-shadow 0.2s';
-                            }, 500);
-                        }
-                    }
-                });
-            });
-        }
-        
-        // --- LÓGICA DO JOGO 2 (STORY DRAG & DROP - SILVESTRES/DOMÉSTICOS) ---
-
-        function startGame2() {
-            currentGameId = 2;
-            showScreen('game2-view');
-            gameActive = true;
-            
-            // 1. Reinicializa o estado do jogo
-            currentScore = 0;
-            matchedItems = 0;
-            currentStoryIndex2 = 0;
-            document.getElementById('current-score-2').textContent = currentScore;
-            // Atualiza placar para 10 perguntas
-            document.querySelector('#score-board-2').innerHTML = `Pontos: <span id="current-score-2">0</span> / ${totalStories2}`;
-            
-            // 2. Re-ativa as palavras para arrastar e reseta cores/opacidade
-            document.querySelectorAll('#draggable-options-2 .drag-word').forEach(word => {
-                word.setAttribute('draggable', 'true');
-                word.style.opacity = '1';
-                word.style.pointerEvents = 'auto';
-            });
-            
-            // 3. Embaralha as histórias e carrega a primeira (garante randomização a cada início)
-            stories2.sort(() => Math.random() - 0.5); 
-            loadStory2();
-        }
-
-        function loadStory2() {
-            const storyContainer = document.getElementById('current-story-text-2');
-            const imageElement = document.getElementById('current-animal-image-2');
-            
-            storyContainer.classList.remove('correct-answer', 'wrong-answer');
-            
-            if (currentStoryIndex2 < totalStories2) {
-                const storyData = stories2[currentStoryIndex2];
-                
-                // Atualiza a imagem do animal
-                imageElement.src = storyData.file;
-                imageElement.alt = storyData.animal;
-                imageElement.style.display = 'block';
-
-                // Monta a frase com o placeholder para o drop
-                const blankHtml = `<span class="drop-blank" data-answer="${storyData.type}" data-filled="false" id="blank-2-${currentStoryIndex2}"></span>`;
-                
-                // Texto: O **Animal**, [dica]. Por isso, ele é um animal: [BLANK].
-                const htmlText = `O <b>${storyData.animal}</b>, ${storyData.hint} Por isso, ele é um animal: ${blankHtml}.`;
-                
-                storyContainer.innerHTML = htmlText;
-                
-                // Adiciona event listeners de drag/drop aos blanks gerados
-                addStoryDragDropListeners(2);
-            } else {
-                // Fim do jogo
-                imageElement.style.display = 'none';
-                storyContainer.innerHTML = "FIM! Todas as histórias foram completadas!";
-                gameActive = false;
-                showEndGameModal(totalStories2);
-            }
-        }
-        
-        // --- JOGO 3: STORY DRAG & DROP (PRODUTOS DOS ANIMAIS) ---
-
-        function startGame3() {
-            currentGameId = 3;
-            showScreen('game3-view');
-            gameActive = true;
-            
-            // 1. Reinicializa o estado do jogo
-            currentScore = 0;
-            // Cria a fila de histórias não respondidas e embaralha
-            unansweredStories3 = shuffle([...productsData3]);
-            
-            document.getElementById('current-score-3').textContent = currentScore;
-            // Atualiza placar para 11 lacunas
-            document.querySelector('#score-board-3').innerHTML = `Pontos: <span id="current-score-3">0</span> / ${totalGaps3}`;
-            
-            // 2. Carrega a primeira história da fila
-            loadStory3();
-        }
-
-        function loadStory3() {
-            const storyContainer = document.getElementById('current-story-text-3');
-            const imageElement = document.getElementById('current-animal-image-3');
-            const draggableOptionsContainer = document.getElementById('draggable-options-3');
-            
-            storyContainer.classList.remove('correct-answer', 'wrong-answer');
-            
-            if (unansweredStories3.length > 0) {
-                // Pega a primeira história da fila
-                const storyData = unansweredStories3[0];
-                
-                // 1. Atualiza a imagem do animal
-                imageElement.src = storyData.file;
-                imageElement.alt = storyData.animal;
-                imageElement.style.display = 'block';
-
-                // 2. Prepara a história: substitui [Produto] por lacunas arrastáveis
-                let htmlText = storyData.story;
-                // Usamos o nome do animal como ID da história para as lacunas
-                const uniqueStoryId = storyData.animal.replace(/ /g, '-'); 
-
-                storyData.products.forEach((product, index) => {
-                    const blankHtml = `<span class="drop-blank drop-blank-3" data-answer="${product}" data-filled="false" data-story="${uniqueStoryId}" id="blank-3-${uniqueStoryId}-${index}"></span>`;
-                    // Substitui a primeira ocorrência do produto [Produto] pelo blank
-                    htmlText = htmlText.replace(`[${product}]`, blankHtml);
-                });
-                storyContainer.innerHTML = htmlText;
-                
-                // 3. Gera e embaralha os produtos arrastáveis (lista completa)
-                draggableOptionsContainer.innerHTML = '';
-                shuffle([...allProducts]).forEach(product => {
-                    const dragWord = document.createElement('div');
-                    dragWord.className = 'drag-word';
-                    dragWord.setAttribute('draggable', 'true');
-                    dragWord.setAttribute('data-word', product);
-                    dragWord.textContent = product;
-                    dragWord.id = `drag-3-${product.replace(/ /g, '-')}`; 
-                    draggableOptionsContainer.appendChild(dragWord);
-                });
-                
-                // 4. Adiciona event listeners de drag/drop aos blanks e palavras
-                addStoryDragDropListeners(3);
-
-            } else {
-                // Fim do jogo (todas as histórias respondidas)
-                imageElement.style.display = 'none';
-                storyContainer.innerHTML = "FIM! Todas as histórias foram completadas!";
-                gameActive = false;
-                showEndGameModal(totalGaps3);
-            }
-        }
-        
-        // Função para pular a história atual e colocá-la no final da fila (Jogo 3)
-        function skipStory3() {
-            if (!gameActive || currentGameId !== 3 || unansweredStories3.length <= 1) {
-                // Se só tiver uma história, não faz sentido pular
-                return;
-            }
-            
-            // 1. Move a história atual (unansweredStories3[0]) para o final da fila.
-            const skippedStory = unansweredStories3.shift();
-            unansweredStories3.push(skippedStory);
-
-            // 2. Carrega a próxima história (que agora está na posição 0)
-            loadStory3();
-        }
-
-        // --- LÓGICA COMPARTILHADA DRAG & DROP PARA JOGO 2 E JOGO 3 ---
-
-        function checkStoryCompletion(gameId) {
-            let currentStoryId;
-            let blanks;
-
-            if (gameId === 2) {
-                currentStoryId = currentStoryIndex2;
-                blanks = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-filled="false"]`);
-            } else if (gameId === 3) {
-                // Jogo 3: o ID da história é o nome do animal da história na posição [0] da fila
-                if (unansweredStories3.length === 0) return; 
-                currentStoryId = unansweredStories3[0].animal.replace(/ /g, '-');
-                // Busca blanks pela data-story, que é o nome do animal
-                blanks = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-filled="false"]`);
-            } else {
-                return;
-            }
-            
-            // Se não sobrar nenhum blank (blanks.length === 0), a história está completa
-            if (blanks.length === 0) {
-                 setTimeout(() => {
-                    if (gameId === 2) {
-                        currentStoryIndex2++;
-                        loadStory2();
-                    } else if (gameId === 3) {
-                        // Remove a história completa da fila e carrega a próxima
-                        unansweredStories3.shift(); 
-                        loadStory3();
-                    }
-                 }, 500);
-            }
-        }
-        
-        function addStoryDragDropListeners(gameId) {
-            const blanks = (gameId === 2) ? 
-                           document.querySelectorAll('#story-container-2 .drop-blank') : 
-                           document.querySelectorAll('#story-container-3 .drop-blank');
-            const dragWords = (gameId === 2) ? 
-                              document.querySelectorAll('#draggable-options-2 .drag-word') : 
-                              document.querySelectorAll('#draggable-options-3 .drag-word');
-            
-            // Drag Start nas palavras
-            dragWords.forEach(word => {
-                word.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', e.target.getAttribute('data-word'));
-                    e.target.style.opacity = '0.7';
-                });
-                word.addEventListener('dragend', (e) => {
-                    e.target.style.opacity = '1';
-                });
-            });
-            
-            // Drop Targets nos blanks
-            blanks.forEach(blank => {
-                blank.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (blank.getAttribute('data-filled') === 'false') {
-                        blank.classList.add('drag-over');
-                    }
-                });
-                
-                blank.addEventListener('dragleave', (e) => {
-                    blank.classList.remove('drag-over');
-                });
-                
-                blank.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    blank.classList.remove('drag-over');
-                    
-                    if (blank.getAttribute('data-filled') === 'true' || !gameActive || currentGameId !== gameId) return; 
-
-                    const droppedWord = e.dataTransfer.getData('text/plain');
-                    const requiredAnswer = blank.getAttribute('data-answer');
-                    
-                    if (droppedWord === requiredAnswer) {
-                        // Acerto
-                        currentScore++;
-                        const scoreId = (gameId === 2) ? 'current-score-2' : 'current-score-3';
-                        document.getElementById(scoreId).textContent = currentScore;
-                        
-                        blank.textContent = droppedWord;
-                        blank.classList.add('correct');
-                        blank.setAttribute('data-filled', 'true');
-                        
-                        // Oculta a palavra arrastada no Jogo 3 (para forçar o uso único na história ATUAL)
-                        if (gameId === 3) {
-                            const originalDragWord = document.getElementById(`drag-3-${droppedWord.replace(/ /g, '-')}`);
-                            
-                            // Verifica se há outros blanks que precisam desta mesma palavra na história atual
-                            const currentStoryId = unansweredStories3[0].animal.replace(/ /g, '-');
-                            const remainingBlanksForWord = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-answer="${droppedWord}"][data-filled="false"]`);
-
-                            if (originalDragWord && remainingBlanksForWord.length === 0) {
-                                // Se NÃO houver mais blanks que precisem desta palavra NESTA história, desativa a palavra
-                                originalDragWord.style.pointerEvents = 'none';
-                                originalDragWord.style.opacity = '0.3';
-                                originalDragWord.setAttribute('draggable', 'false');
-                            }
-                        }
-
-                        // Verifica se a história está completa (e carrega a próxima)
-                        checkStoryCompletion(gameId);
-                        
-                    } else {
-                        // Erro - feedback visual de erro no blank (Shake)
-                        blank.style.animation = 'shake 0.3s';
-                        setTimeout(() => {
-                            blank.style.animation = 'none';
-                        }, 300);
-                    }
-                });
-            });
-        }
-        
-        // --- MODAL DE FIM DE JOGO ---
-        function showEndGameModal(totalItems) {
-            const message = document.createElement('div');
-            message.innerHTML = `
-                <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;">
-                    <div style="background:#fff; padding:30px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.5); max-width: 90%; text-align: center;">
-                        <h3 style="color:#28a745; font-size:2em; margin-top:0;">🎉 Parabéns!</h3>
-                        <p style="font-size:1.2em;">Você acertou ${currentScore} de ${totalItems} questões!</p>
-                        <button onclick="this.parentElement.parentElement.remove(); showMenu();" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin-top:10px;">Voltar ao Menu Principal</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(message);
-        }
-        
-        
-        // --- LÓGICA DO JOGO 4: TRANSPORTES E PLACAS (Integrado) ---
-        
-        function startGame4() {
-            currentGameId = 4;
-            showScreen('game4-view');
-            // Chama a função interna do Jogo 4 para garantir que ele comece no menu interno.
-            voltarAoMenuJ4(); 
-        }
-
-        function voltarAoMenuJ4() {
-            document.getElementById('menu-inicial-4').style.display = 'block';
-            document.getElementById('tela-jogo-4').style.display = 'none';
-            document.getElementById('tela-fim-4').style.display = 'none';
-        }
-
-        function iniciarModoJ4(modo) {
-            modoAtual4 = modo;
-            pontuacao4 = 0;
-            indiceAtual4 = 0;
-
-            // Seleciona e embaralha as perguntas
-            if (modo === 'transportes') {
-                perguntasAtuais4 = shuffle(dadosTransportes4);
-                document.getElementById('titulo-modo-4').innerText = "Modo: Veículos 🚗";
-            } else {
-                perguntasAtuais4 = shuffle(dadosPlacas4);
-                document.getElementById('titulo-modo-4').innerText = "Modo: Placas 🛑";
-            }
-
-            // Troca de tela
-            document.getElementById('menu-inicial-4').style.display = 'none';
-            document.getElementById('tela-jogo-4').style.display = 'block';
-            document.getElementById('tela-fim-4').style.display = 'none';
-
-            renderizarPerguntaJ4();
-        }
-
-        function renderizarPerguntaJ4() {
-            const dados = perguntasAtuais4[indiceAtual4];
-            
-            // Texto
-            document.getElementById('texto-pergunta-4').innerText = dados.p;
-            
-            // Imagem
-            const imgEl = document.getElementById('imagem-jogo-4');
-            if (modoAtual4 === 'placas') {
-                // No modo placas, a imagem faz parte da pergunta
-                imgEl.src = dados.img;
-                imgEl.style.display = 'block';
-            } else {
-                // No modo transportes, a imagem é "surpresa" (aparece só na resposta), então escondemos agora
-                imgEl.style.display = 'none';
-                imgEl.src = dados.img; // Já deixamos carregada para o feedback
-            }
-
-            // Limpa estado anterior
-            document.getElementById('feedback-4').innerText = "";
-            document.getElementById('btn-proxima-4').style.display = 'none';
-            const divBotoes = document.getElementById('lista-botoes-4');
-            divBotoes.innerHTML = "";
-
-            // Gera botões embaralhados
-            const alternativas = shuffle(dados.alts);
-            
-            alternativas.forEach(alt => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-resposta-4';
-                btn.innerText = alt;
-                // Usa função com sufixo J4
-                btn.onclick = function() { checarRespostaJ4(alt, dados.r, btn); }; 
-                divBotoes.appendChild(btn);
-            });
-        }
-
-        function checarRespostaJ4(escolha, correta, elementoBotao) {
-            // Bloqueia todos os botões
-            const todosBotoes = document.querySelectorAll('.btn-resposta-4');
-            todosBotoes.forEach(b => b.disabled = true);
-
-            const feedback = document.getElementById('feedback-4');
-
-            if (escolha === correta) {
-                pontuacao4++;
-                feedback.innerHTML = "<span style='color:green'>🎉 Muito bem! Acertou!</span>";
-                elementoBotao.style.backgroundColor = "#c8e6c9"; // Verde claro
-                elementoBotao.style.borderColor = "green";
-            } else {
-                feedback.innerHTML = "<span style='color:red'>❌ Ops! A resposta certa era: " + correta + "</span>";
-                elementoBotao.style.backgroundColor = "#ffcdd2"; // Vermelho claro
-                elementoBotao.style.borderColor = "red";
-            }
-
-            // Se for modo transportes, mostra a imagem do veículo agora
-            if (modoAtual4 === 'transportes') {
-                const imgEl = document.getElementById('imagem-jogo-4');
-                imgEl.style.display = 'block';
-            }
-
-            document.getElementById('btn-proxima-4').style.display = 'inline-block';
-        }
-
-        function proximaPerguntaJ4() {
-            indiceAtual4++;
-            
-            if (indiceAtual4 < perguntasAtuais4.length) {
-                renderizarPerguntaJ4();
-            } else {
-                finalizarJogoJ4();
-            }
-        }
-
-        function finalizarJogoJ4() {
-            document.getElementById('tela-jogo-4').style.display = 'none';
-            document.getElementById('tela-fim-4').style.display = 'block';
-
-            const total = perguntasAtuais4.length;
-            document.getElementById('texto-pontuacao-4').innerText = `Você acertou ${pontuacao4} de ${total}!`;
-
-            let msg = "";
-            if (pontuacao4 === total) msg = "Uau! Você sabe tudo de trânsito! 🏆";
-            else if (pontuacao4 > total / 2) msg = "Mandou muito bem! Continue assim! 👏";
-            else msg = "Foi legal! Que tal tentar de novo para aprender mais? 😉";
-            
-            document.getElementById('mensagem-final-4').innerText = msg;
-        }
-
-        // --- LÓGICA DO JOGO 5: ORIGEM DOS MATERIAIS ---
-
         function startGame5() {
             currentGameId = 5;
             showScreen('game5-view');
             gameActive = true;
-            
             pontuacao5 = 0;
             selectedMaterialId5 = null;
-            
-            // Embaralha e clona o array de materiais para o novo jogo
             materiaisDisponiveis5 = shuffle([...materiais5]);
-            
             document.getElementById('pontuacao-5').innerText = pontuacao5;
-            document.getElementById('total-pares-5').innerText = materiais5.length; // 8 pares
-            
-            // Exibe a interface do jogo e esconde o resultado
+            document.getElementById('total-pares-5').innerText = materiais5.length; 
             document.getElementById('resultado-5').classList.add('esconder');
             document.getElementById('jogo5-interface').classList.remove('esconder');
-            
             montarGradeMateriais5();
             montarGradeCategorias5();
         }
@@ -2169,7 +1779,6 @@
         function montarGradeCategorias5() {
             const grid = document.getElementById('categories-grid-5');
             grid.innerHTML = '';
-            
             categorias5.forEach(categoria => {
                 const div = document.createElement('div');
                 div.classList.add('category-item-5');
@@ -2184,59 +1793,40 @@
         }
 
         function selecionarMaterial5(e) {
-            // Remove a seleção anterior
             document.querySelectorAll('.material-item-5.selected').forEach(item => {
                 item.classList.remove('selected');
             });
-
             const materialItem = e.currentTarget;
-            
-            // Se o material já foi pareado, ignore o clique
             if (materialItem.classList.contains('matched')) return;
-
-            // Seleciona o novo material
             materialItem.classList.add('selected');
             selectedMaterialId5 = materialItem.getAttribute('data-id');
         }
 
         function tentarAssociacao5(e) {
             if (selectedMaterialId5 === null) return;
-
             const categoriaItem = e.currentTarget;
             const categoriaValue = categoriaItem.getAttribute('data-value');
-            
-            // Encontra o elemento do material selecionado no DOM
             const materialElement = document.querySelector(`.material-item-5[data-id='${selectedMaterialId5}']`);
             if(!materialElement) return;
-            
             const materialCategory = materialElement.getAttribute('data-category');
-
             if (materialElement.classList.contains('matched')) return;
 
             if (materialCategory === categoriaValue) {
-                // MATCH CORRETO
                 pontuacao5++;
                 document.getElementById('pontuacao-5').innerText = pontuacao5;
-                
-                // Clona o conteúdo visual
                 const materialContent = materialElement.innerHTML;
                 const movedItem = document.createElement('div');
                 movedItem.innerHTML = materialContent;
                 movedItem.classList.add('material-inside-box-5');
-
                 const contentBox = categoriaItem.querySelector('.category-content-5');
                 if (contentBox) contentBox.appendChild(movedItem);
-
                 materialElement.classList.add('matched');
                 materialElement.classList.remove('selected');
-                
                 categoriaItem.classList.add('success-pulse');
                 setTimeout(() => {
                     categoriaItem.classList.remove('success-pulse');
                 }, 300);
-                
                 selectedMaterialId5 = null; 
-                
                 if (pontuacao5 === materiais5.length) { 
                     setTimeout(() => {
                         document.getElementById('jogo5-interface').classList.add('esconder');
@@ -2244,126 +1834,95 @@
                         document.getElementById('pontuacao-final-5').innerText = `Você formou todos os ${pontuacao5} pares! Excelente trabalho!`;
                     }, 500);
                 }
-
             } else {
-                // MATCH INCORRETO
                 categoriaItem.animate([
-                    { transform: 'translateX(0px)' },
-                    { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(10px)' },
-                    { transform: 'translateX(-10px)' },
-                    { transform: 'translateX(0px)' }
+                    { transform: 'translateX(0px)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(-10px)' }, { transform: 'translateX(0px)' }
                 ], { duration: 300 });
-
                 materialElement.classList.remove('selected');
                 selectedMaterialId5 = null;
             }
         }
-        
-        // --- LÓGICA DO JOGO 6: ANTÔNIMOS ---
-        
+
+        // --- JOGO 6: ANTÔNIMOS ---
+        const antonymsData = [
+            { w: "Bonito", a: "Feio", s: "O jardim é <span class='highlight-word'>bonito</span>, mas o lixão é ______.", d: ["Cheiroso", "Feio", "Colorido"] },
+            { w: "Cheio", a: "Vazio", s: "O copo estava <span class='highlight-word'>cheio</span>, agora está ______.", d: ["Quente", "Largo", "Vazio"] },
+            { w: "Transparente", a: "Opaco", s: "O vidro é <span class='highlight-word'>transparente</span>, mas o tijolo é ______.", d: ["Opaco", "Brilhante", "Mole"] },
+            { w: "Salgado", a: "Doce", s: "O salgadinho é <span class='highlight-word'>salgado</span>, o bolo é ______.", d: ["Doce", "Azedo", "Frio"] },
+            { w: "Fraco", a: "Forte", s: "O gatinho é <span class='highlight-word'>fraco</span>, mas o leão é ______.", d: ["Lento", "Forte", "Triste"] },
+            { w: "Largo", a: "Estreito", s: "O rio é <span class='highlight-word'>largo</span>, mas o riacho é ______.", d: ["Estreito", "Alto", "Rápido"] },
+            { w: "Bem", a: "Mal", s: "O herói se comportou <span class='highlight-word'>bem</span>, mas o vilão se comportou ______.", d: ["Feliz", "Mal", "Rápido"] },
+            { w: "Lento", a: "Rápido", s: "O caracol é <span class='highlight-word'>lento</span>, mas o coelho é ______.", d: ["Alto", "Rápido", "Verde"] },
+            { w: "Comprido", a: "Curto", s: "O trem é <span class='highlight-word'>comprido</span>, mas o fusca é ______.", d: ["Curto", "Belo", "Gordo"] },
+            { w: "Muito", a: "Pouco", s: "Eu tenho <span class='highlight-word'>muito</span> sono, mas tenho ______ tempo.", d: ["Longo", "Pouco", "Grande"] },
+            { w: "Pequeno", a: "Grande", s: "O rato é <span class='highlight-word'>pequeno</span>, mas o elefante é ______.", d: ["Grande", "Fino", "Rápido"] },
+            { w: "Vitória", a: "Derrota", s: "O time comemorou a <span class='highlight-word'>vitória</span> e o outro chorou a ______.", d: ["Festa", "Alegria", "Derrota"] },
+            { w: "Mole", a: "Duro", s: "O travesseiro é <span class='highlight-word'>mole</span>, mas o chão é ______.", d: ["Duro", "Fino", "Liso"] },
+            { w: "Claro", a: "Escuro", s: "O dia é <span class='highlight-word'>claro</span>, mas o túnel é ______.", d: ["Frio", "Escuro", "Belo"] },
+            { w: "Liso", a: "Áspero", s: "O piso encerado é <span class='highlight-word'>liso</span>, o cimento é ______.", d: ["Áspero", "Mole", "Fino"] },
+            { w: "Achar", a: "Perder", s: "É bom <span class='highlight-word'>achar</span> uma moeda, mas é ruim ______.", d: ["Gastar", "Perder", "Ganhar"] },
+            { w: "Fino", a: "Grosso", s: "O fio de cabelo é <span class='highlight-word'>fino</span>, mas o tronco da árvore é ______.", d: ["Grosso", "Alto", "Mole"] },
+            { w: "Raso", a: "Fundo", s: "O prato de sobremesa é <span class='highlight-word'>raso</span>, mas o balde é ______.", d: ["Quente", "Fundo", "Largo"] }
+        ];
+
+        let questions6 = [];
+        let currentQIndex6 = 0;
+
         function startGame6() {
             currentGameId = 6;
             showScreen('game6-view');
             gameActive = true;
-            
-            // Embaralha e seleciona as questões
             questions6 = shuffle([...antonymsData]);
             currentQIndex6 = 0;
-            
-            // Update HUD
             document.getElementById('total-q-6').innerText = questions6.length;
-            
             loadQuestion6();
         }
 
         function loadQuestion6() {
             if (currentQIndex6 >= questions6.length) {
-                // Fim de jogo
                 showEndGameModal(questions6.length);
                 return;
             }
-
             document.getElementById('current-q-6').innerText = currentQIndex6 + 1;
             const data = questions6[currentQIndex6];
-            const feedbackEl = document.getElementById('feedback-6');
-            feedbackEl.innerText = "";
-            
-            // 1. Mostrar Frase
+            document.getElementById('feedback-6').innerText = "";
             const sentenceContainer = document.getElementById('sentence-text-6');
-            // Substitui ______ por uma área dropável
-            const sentenceHtml = data.s.replace('______', `<span id="drop-zone-6" class="drop-zone-6">ARRASTE AQUI</span>`);
+            const sentenceHtml = data.s.replace('______', `<span id="drop-zone-6" class="drop-zone-6">ARRRASTE AQUI</span>`);
             sentenceContainer.innerHTML = sentenceHtml;
-            
-            // 2. Mostrar Opções
             const optionsContainer = document.getElementById('options-container-6');
             optionsContainer.innerHTML = '';
-            
             let optionsToShow = shuffle([...data.d]); 
-            
             optionsToShow.forEach(word => {
                 const div = document.createElement('div');
                 div.className = 'word-option-6';
                 div.innerText = word;
                 div.setAttribute('draggable', 'true');
                 div.id = 'opt-6-' + word;
-                
-                // --- Desktop Drag Events ---
                 div.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', word); // Formato corrigido
+                    e.dataTransfer.setData('text/plain', word);
                     e.target.style.opacity = '0.5';
                 });
                 div.addEventListener('dragend', (e) => {
                     e.target.style.opacity = '1';
                 });
-                
-                // --- Mobile Touch Events (Correção para celular) ---
-                div.addEventListener('touchstart', (e) => {
-                   e.target.style.opacity = '0.5';
-                   // Previne a rolagem da tela enquanto arrasta este item específico
-                   document.body.style.overflow = 'hidden'; 
-                }, {passive: false});
-
-                div.addEventListener('touchend', (e) => {
-                   e.target.style.opacity = '1';
-                   document.body.style.overflow = 'auto'; // Restaura rolagem
-                   
-                   // Lógica para detectar onde soltou o dedo
-                   const touch = e.changedTouches[0];
-                   const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                   
-                   // Verifica se soltou em cima da zona correta
-                   if (element && (element.id === 'drop-zone-6' || element.classList.contains('drop-zone-6'))) {
-                       checkAnswer6(word);
-                   }
+                addTouchSupport(div, (draggedItem, target) => {
+                    if(target && target.id === 'drop-zone-6') checkAnswer6(word);
                 });
-
-                div.addEventListener('touchmove', (e) => {
-                    e.preventDefault(); // Essencial para o mobile não rolar a tela
-                }, {passive: false});
-                
-                // Click Fallback (Opção de clique simples)
                 div.addEventListener('click', () => checkAnswer6(word));
-
                 optionsContainer.appendChild(div);
             });
-            
-            // 3. Drop Zone Events
             const dropZone = document.getElementById('drop-zone-6');
-            
             dropZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropZone.classList.add('hovered');
             });
-            
             dropZone.addEventListener('dragleave', () => {
                 dropZone.classList.remove('hovered');
             });
-            
             dropZone.addEventListener('drop', (e) => {
                 e.preventDefault();
                 dropZone.classList.remove('hovered');
-                const word = e.dataTransfer.getData('text/plain'); // Formato corrigido
+                const word = e.dataTransfer.getData('text/plain');
                 checkAnswer6(word);
             });
         }
@@ -2372,26 +1931,18 @@
             const data = questions6[currentQIndex6];
             const feedbackEl = document.getElementById('feedback-6');
             const dropZone = document.getElementById('drop-zone-6');
-            
-            // Previne múltiplos cliques
             if (dropZone.classList.contains('correct')) return;
-
             if (selectedWord === data.a) {
-                // Correto
                 dropZone.innerText = selectedWord;
                 dropZone.classList.add('correct');
                 feedbackEl.innerHTML = "<span style='color:green'>Muito bem! " + data.w + " é o contrário de " + data.a + "!</span>";
-                
-                // Som de acerto ou delay
                 setTimeout(() => {
-                    currentScore = currentQIndex6 + 1; // Score hack simples
+                    currentScore = currentQIndex6 + 1; 
                     currentQIndex6++;
                     loadQuestion6();
                 }, 1500);
             } else {
-                // Errado
                 feedbackEl.innerHTML = "<span style='color:red'>Tente novamente!</span>";
-                // Efeito visual de erro
                 dropZone.style.backgroundColor = '#ffcdd2';
                 setTimeout(() => {
                     dropZone.style.backgroundColor = '#f3e5f5';
@@ -2399,72 +1950,72 @@
             }
         }
 
-        // --- LÓGICA DO JOGO 7: SINÔNIMOS ---
+        // --- JOGO 7: SINÔNIMOS ---
+        const synonymsData = [
+            { a: "Longe", b: "Distante" },
+            { a: "Ouvir", b: "Escutar" },
+            { a: "Garoto", b: "Menino" },
+            { a: "Pular", b: "Saltar" },
+            { a: "Alegre", b: "Contente" },
+            { a: "Próximo", b: "Perto" },
+            { a: "Gostoso", b: "Saboroso" },
+            { a: "Acabar", b: "Finalizar" },
+            { a: "Início", b: "Começo" },
+            { a: "Perfume", b: "Aroma" }
+        ];
+
+        const synonymColors = [
+            "#F44336", "#E91E63", "#9C27B0", "#3F51B5", "#2196F3", "#009688", "#4CAF50", "#FBC02D", "#FF9800", "#795548"
+        ];
+
+        let selectedCardCol1_7 = null;
+        let currentScore7 = 0;
 
         function startGame7() {
             currentGameId = 7;
             showScreen('game7-view');
             gameActive = true;
-            
             currentScore7 = 0;
-            currentScore = 0; // CORREÇÃO: Reseta a pontuação global para o modal
+            currentScore = 0;
             selectedCardCol1_7 = null;
             document.getElementById('current-score-7').innerText = currentScore7;
-            
-            // 1. Preparar os dados
-            // Cria uma lista de pares com ID e Cor
             const gameData = synonymsData.map((pair, index) => ({
                 id: index,
                 wordA: pair.a,
                 wordB: pair.b,
                 color: synonymColors[index % synonymColors.length]
             }));
-            
-            // 2. Embaralhar listas separadas para coluna 1 e coluna 2
-            const col1Items = shuffle([...gameData]); // Cópia embaralhada para col 1
-            const col2Items = shuffle([...gameData]); // Cópia embaralhada para col 2
-            
-            // 3. Renderizar Coluna 1 (Colorida)
+            const col1Items = shuffle([...gameData]); 
+            const col2Items = shuffle([...gameData]); 
             const col1Container = document.getElementById('synonyms-col-1');
-            col1Container.innerHTML = '<h3>Palavras</h3>'; // Reset header
-            
+            col1Container.innerHTML = '<h3>Palavras</h3>'; 
             col1Items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'synonym-card';
-                card.style.backgroundColor = item.color; // Já nasce colorida
+                card.style.backgroundColor = item.color;
                 card.innerText = item.wordA;
                 card.dataset.id = item.id;
                 card.dataset.color = item.color;
-                
                 card.onclick = () => handleCol1Click7(card);
                 col1Container.appendChild(card);
             });
-            
-            // 4. Renderizar Coluna 2 (Sem cor inicial)
             const col2Container = document.getElementById('synonyms-col-2');
-            col2Container.innerHTML = '<h3>Sinônimos</h3>'; // Reset header
-            
+            col2Container.innerHTML = '<h3>Sinônimos</h3>'; 
             col2Items.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'synonym-card uncolored'; // Classe para estilo cinza
+                card.className = 'synonym-card uncolored'; 
                 card.innerText = item.wordB;
                 card.dataset.id = item.id;
-                card.dataset.targetColor = item.color; // Guarda a cor que deve ter
-                
+                card.dataset.targetColor = item.color; 
                 card.onclick = () => handleCol2Click7(card);
                 col2Container.appendChild(card);
             });
         }
 
         function handleCol1Click7(card) {
-            // Se já está pareado, ignora
             if (card.classList.contains('matched')) return;
-            
-            // Remove seleção anterior visual
             const allCol1 = document.querySelectorAll('#synonyms-col-1 .synonym-card');
             allCol1.forEach(c => c.classList.remove('selected'));
-            
-            // Seleciona o novo
             card.classList.add('selected');
             selectedCardCol1_7 = {
                 id: card.dataset.id,
@@ -2474,38 +2025,23 @@
         }
 
         function handleCol2Click7(card) {
-            // Se já está pareado ou não tem seleção na col 1, ignora
             if (card.classList.contains('matched') || !selectedCardCol1_7) return;
-            
             const selectedId = selectedCardCol1_7.id;
             const targetId = card.dataset.id;
-            
             if (selectedId === targetId) {
-                // MATCH!
-                // 1. Aplica a cor
                 card.style.backgroundColor = selectedCardCol1_7.color;
                 card.classList.remove('uncolored');
-                
-                // 2. Marca ambos como pareados
                 card.classList.add('matched');
                 selectedCardCol1_7.element.classList.add('matched');
                 selectedCardCol1_7.element.classList.remove('selected');
-                
-                // 3. Efeito visual extra (opcional)
-                
-                // 4. Reset state e Score
                 selectedCardCol1_7 = null;
                 currentScore7++;
-                currentScore = currentScore7; // CORREÇÃO: Atualiza a pontuação global usada no modal
+                currentScore = currentScore7;
                 document.getElementById('current-score-7').innerText = currentScore7;
-                
                 if (currentScore7 === 10) {
                     showEndGameModal(10);
                 }
-                
             } else {
-                // ERRO
-                // Feedback visual de erro (chacoalhar)
                 card.classList.add('shake-animation');
                 setTimeout(() => {
                     card.classList.remove('shake-animation');
@@ -2513,30 +2049,46 @@
             }
         }
 
-        // --- LÓGICA DO JOGO 8: PRONOMES (DRAG & DROP) ---
+        // --- JOGO 8: PRONOMES ---
+        const pronounsRealData = [
+            { s: "Julia e [BLANK] fomos ao cinema.", a: ["Eu"], full: "Julia e <strong>Eu</strong> fomos ao cinema." },
+            { s: "João é escritor. [BLANK] escreve muitos livros.", a: ["Ele"], full: "João é escritor. <strong>Ele</strong> escreve muitos livros." },
+            { s: "[BLANK] comi um bolo e a Ana estava cansada, então [BLANK] dormiu.", a: ["Eu", "Ela"], full: "<strong>Eu</strong> comi um bolo e a Ana estava cansada, então <strong>Ela</strong> dormiu." },
+            { s: "José foi passear. [BLANK] foi à praia.", a: ["Ele"], full: "José foi passear. <strong>Ele</strong> foi à praia." },
+            { s: "José e Marina foram ao Parque. [BLANK] brincaram muito.", a: ["Eles"], full: "José e Marina foram ao Parque. <strong>Eles</strong> brincaram muito." },
+            { s: "Mamãe tomou café. [BLANK] está muito feliz.", a: ["Ela"], full: "Mamãe tomou café. <strong>Ela</strong> está muito feliz." },
+            { s: "Eu adoro esportes. [BLANK] gosto de jogar bola.", a: ["Eu"], full: "Eu adoro esportes. <strong>Eu</strong> gosto de jogar bola." },
+            { s: "Eu e você somos um time. [BLANK] vamos ganhar o jogo.", a: ["Nós"], full: "Eu e você somos um time. <strong>Nós</strong> vamos ganhar o jogo." },
+            { s: "As meninas dançam balé. [BLANK] são muito talentosas.", a: ["Elas"], full: "As meninas dançam balé. <strong>Elas</strong> são muito talentosas." },
+            { s: "O gato miou alto. [BLANK] quer beber leite.", a: ["Ele"], full: "O gato miou alto. <strong>Ele</strong> quer beber leite." },
+            { s: "Bia é estudiosa. [BLANK] tira boas notas na escola.", a: ["Ela"], full: "Bia é estudiosa. <strong>Ela</strong> tira boas notas na escola." },
+            { s: "[BLANK] e meu irmão somos grandes amigos.", a: ["Eu"], full: "<strong>Eu</strong> e meu irmão somos grandes amigos." },
+            { s: "Os meninos correram na rua. [BLANK] chegaram cansados.", a: ["Eles"], full: "Os meninos correram na rua. <strong>Eles</strong> chegaram cansados." },
+            { s: "[BLANK] fui ao mercado e o vovô disse que [BLANK] ficou em casa.", a: ["Eu", "Ele"], full: "<strong>Eu</strong> fui ao mercado e o vovô disse que <strong>Ele</strong> ficou em casa." },
+            { s: "A flor murchou no vaso. [BLANK] precisava de mais água.", a: ["Ela"], full: "A flor murchou no vaso. <strong>Ela</strong> precisava de mais água." },
+            { s: "Ana e Bia cantaram no show. [BLANK] são ótimas cantoras.", a: ["Elas"], full: "Ana e Bia cantaram no show. <strong>Elas</strong> são ótimas cantoras." }
+        ];
+
+        let questions8 = [];
+        let currentQIndex8 = 0;
+
         function startGame8() {
             currentGameId = 8;
             showScreen('game8-view');
             gameActive = true;
-            
-            questions8 = shuffle([...pronounsRealData]); // Usa a lista corrigida
+            questions8 = shuffle([...pronounsRealData]); 
             currentQIndex8 = 0;
             currentScore = 0;
-            
             document.getElementById('total-q-8').innerText = questions8.length;
-            document.getElementById('completed-list-8').innerHTML = ''; // Limpa a lista
-            
+            document.getElementById('completed-list-8').innerHTML = ''; 
             setupDraggables8(); 
             loadQuestion8();
         }
 
         function setupDraggables8() {
             const draggables = document.querySelectorAll('#pronoun-bank-8 .drag-pronoun');
-            
             draggables.forEach(item => {
                 const word = item.getAttribute('data-word');
-                
-                // Desktop
                 item.addEventListener('dragstart', (e) => {
                     e.dataTransfer.setData('text/plain', word);
                     e.target.style.opacity = '0.5';
@@ -2544,29 +2096,11 @@
                 item.addEventListener('dragend', (e) => {
                     e.target.style.opacity = '1';
                 });
-
-                // Mobile
-                item.addEventListener('touchstart', (e) => {
-                   e.target.style.opacity = '0.5';
-                   document.body.style.overflow = 'hidden'; 
-                }, {passive: false});
-
-                item.addEventListener('touchend', (e) => {
-                   e.target.style.opacity = '1';
-                   document.body.style.overflow = 'auto'; 
-                   
-                   const touch = e.changedTouches[0];
-                   const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                   
-                   if (element && element.classList.contains('drop-zone-8')) {
-                       // Passa o elemento alvo e a palavra
-                       checkDrop8(element, word);
-                   }
+                addTouchSupport(item, (draggedItem, target) => {
+                    if (target && target.classList.contains('drop-zone-8')) {
+                        checkDrop8(target, word);
+                    }
                 });
-
-                item.addEventListener('touchmove', (e) => {
-                    e.preventDefault(); 
-                }, {passive: false});
             });
         }
 
@@ -2575,27 +2109,16 @@
                 showEndGameModal(questions8.length);
                 return;
             }
-
             document.getElementById('current-q-8').innerText = currentQIndex8 + 1;
             const data = questions8[currentQIndex8];
-            const feedbackEl = document.getElementById('feedback-8');
-            feedbackEl.innerText = "";
-            
-            // Renderiza a frase com Drop Zones
+            document.getElementById('feedback-8').innerText = "";
             const sentenceBox = document.getElementById('sentence-text-8');
             let htmlSentence = data.s;
-            
-            // Substitui todos os [BLANK] por zonas de drop com índices
             data.a.forEach((ans, index) => {
-                // Cria o HTML da zona de drop
                 const dropZoneHtml = `<span class="drop-zone-8" data-index="${index}" data-answer="${ans}">___</span>`;
-                // Substitui apenas a primeira ocorrência de [BLANK]
                 htmlSentence = htmlSentence.replace('[BLANK]', dropZoneHtml);
             });
-            
             sentenceBox.innerHTML = htmlSentence;
-            
-            // Adiciona listeners nas novas drop zones
             const dropZones = document.querySelectorAll('.drop-zone-8');
             dropZones.forEach(zone => {
                 zone.addEventListener('dragover', (e) => {
@@ -2615,21 +2138,15 @@
         }
 
         function checkDrop8(zoneElement, droppedWord) {
-            // Se já estiver correto, não faz nada
             if (zoneElement.classList.contains('correct-8')) return;
-
             const correctAnswer = zoneElement.getAttribute('data-answer');
             const feedbackEl = document.getElementById('feedback-8');
-
             if (droppedWord === correctAnswer) {
-                // Acerto
                 zoneElement.innerText = droppedWord;
                 zoneElement.classList.add('correct-8');
                 feedbackEl.innerHTML = "<span style='color:green'>Isso aí!</span>";
-                
                 checkSentenceCompletion8();
             } else {
-                // Erro
                 feedbackEl.innerHTML = "<span style='color:red'>Tente outro pronome.</span>";
                 zoneElement.style.backgroundColor = '#ffcdd2';
                 setTimeout(() => {
@@ -2641,23 +2158,15 @@
         function checkSentenceCompletion8() {
             const allZones = document.querySelectorAll('.drop-zone-8');
             const correctZones = document.querySelectorAll('.correct-8');
-            
-            // Se todas as lacunas foram preenchidas corretamente
             if (allZones.length === correctZones.length) {
                 currentScore++;
-                
-                // Adiciona à lista permanente
                 const data = questions8[currentQIndex8];
                 const list = document.getElementById('completed-list-8');
                 const newItem = document.createElement('li');
-                newItem.innerHTML = data.full; // Usa a versão completa formatada com negrito
+                newItem.innerHTML = data.full; 
                 list.appendChild(newItem);
-                
-                // Rola a lista para baixo para mostrar o item novo
                 const rightPanel = document.querySelector('.game8-right-panel');
                 rightPanel.scrollTop = rightPanel.scrollHeight;
-
-                // Avança para próxima pergunta
                 setTimeout(() => {
                     currentQIndex8++;
                     loadQuestion8();
@@ -2665,7 +2174,6 @@
             }
         }
 
-        // Inicia o aplicativo mostrando o menu principal
         window.onload = showMenu;
     </script>
 </body>
