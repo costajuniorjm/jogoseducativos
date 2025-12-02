@@ -1,0 +1,2672 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Jogos Educativos</title>
+    <style>
+        /* Estilos Globais */
+        body {
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #c9e8f4 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            color: #1a4d90;
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Estilo para as Vistas (Telas) */
+        .view {
+            max-width: 1000px;
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.5s;
+            display: none; /* Controlado pelo JS */
+        }
+
+        /* Estilos do Menu Inicial */
+        #menu-view {
+            padding: 40px 20px;
+        }
+
+        .menu-title {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #f9a03f;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-button {
+            padding: 18px;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-game1 { background-color: #4CAF50; } /* Verde */
+        .btn-game2 { background-color: #2196F3; } /* Azul */
+        .btn-game3 { background-color: #FF9800; } /* Laranja */
+        .btn-game4 { background-color: #9c27b0; } /* Roxo (Transportes) */
+        .btn-game5 { background-color: #1a73e8; } /* Azul Escuro (Materiais) */
+        .btn-game6 { background-color: #9C27B0; } /* Roxo (Português) */
+        .btn-game7 { background-color: #E91E63; } /* Rosa (Sinônimos) */
+        .btn-game8 { background-color: #009688; } /* Verde Água (Pronomes) */
+        
+        /* Estilos do Jogo Principal (Geral) */
+        .instrucao {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .coluna {
+            width: 48%;
+            padding: 15px;
+            border: 2px dashed #a0c4ff;
+            border-radius: 10px;
+            background-color: #f7faff;
+        }
+        
+        /* Container para os itens arrastáveis com Grid e Scroll */
+        .drag-items-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px;
+            max-height: 450px; 
+            overflow-y: auto; 
+            padding: 5px;
+            border-radius: 5px;
+            background-color: #e9efff; 
+        }
+
+        .coluna h2 {
+            font-size: 1.4em;
+            color: #1a4d90;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+        }
+
+        /* Itens Arrastáveis (Drag Items - Jogo 1) */
+        .drag-item {
+            cursor: grab;
+            margin: 0; 
+            padding: 8px;
+            background-color: #fff;
+            border: 3px solid #ffcc00;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .drag-item:active {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1.03);
+            z-index: 10; 
+        }
+
+        .drag-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            pointer-events: none; 
+        }
+
+        .drag-item span {
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+            pointer-events: none; 
+        }
+
+        /* Alvos (Drop Targets - Jogo 1) */
+        .drop-target {
+            background-color: #1a4d90; 
+            color: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 4px solid #103a6e;
+            transition: background-color 0.3s, transform 0.3s;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .drop-target .group-name {
+            font-size: 1.6em; 
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .drop-target .group-desc {
+            font-size: 1.1em; 
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .drop-target:hover {
+            transform: scale(1.02);
+        }
+
+        /* --- NOVO CSS PARA O JOGO 1: Conteúdo dentro da Caixa --- */
+        .drop-target-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 15px;
+            width: 100%;
+            min-height: 20px;
+            background-color: rgba(255, 255, 255, 0.1); /* Fundo sutil */
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        .mini-animal-item {
+            width: 70px; /* Menor que o original */
+            background-color: white;
+            border-radius: 5px;
+            padding: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7em; /* Texto menor */
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        .mini-animal-item img {
+            width: 100%;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+        
+        /* Animação para feedback de sucesso */
+        @keyframes pulse-success {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); }
+            50% { transform: scale(1.01); box-shadow: 0 0 20px rgba(40, 167, 69, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); }
+        }
+
+        /* Feedback de Acerto Aprimorado */
+        .correct-match {
+            background-color: #43a047 !important; 
+            border-color: #2e7d32 !important;
+            animation: pulse-success 0.4s ease-out; 
+            cursor: default !important;
+        }
+        
+        /* Pontuação e Controles */
+        .score-board {
+            margin: 10px auto 20px;
+            padding: 10px;
+            background-color: #ffe0b2;
+            border-radius: 8px;
+            width: fit-content;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #e65100;
+        }
+        
+        .game-controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-button {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 3px #333333;
+            margin: 5px;
+        }
+        
+        #btn-back-menu {
+            background-color: #f44336; /* Vermelho */
+            color: white;
+        }
+        #btn-back-menu:hover { background-color: #d32f2f; }
+        
+        #btn-restart {
+            background-color: #ffc107; /* Amarelo */
+            color: #333;
+        }
+        #btn-restart:hover { background-color: #e0a800; }
+
+        /* --- ESTILOS ESPECÍFICOS DO JOGO 2 & 3 (DRAG & DROP EM TEXTO) --- */
+        #game2-content, #game3-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        /* Container das palavras arrastáveis (Opções) */
+        .draggable-options-container {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 10px; 
+            max-width: 90%;
+            margin-bottom: 20px;
+        }
+
+        .drag-word {
+            padding: 10px 15px; /* Menor padding para caber mais palavras */
+            font-size: 1.2em; /* Menor fonte para caber mais palavras */
+            font-weight: 900;
+            color: white;
+            border-radius: 8px;
+            cursor: grab;
+            transition: transform 0.1s;
+            box-shadow: 0 3px #103a6e;
+            background-color: #2196F3; /* Azul */
+            touch-action: none;
+        }
+
+        .drag-word:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px #103a6e;
+        }
+
+        .current-animal-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 4px solid #f9a03f;
+            display: none; 
+            margin: 0 auto 15px;
+        }
+
+        .story-container {
+            border: 3px solid #2196F3;
+            border-radius: 15px;
+            padding: 30px;
+            background-color: #e3f2fd;
+            font-size: 1.6em; 
+            text-align: left;
+            min-height: 180px;
+            width: 90%;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        .drop-blank {
+            display: inline-block;
+            min-width: 140px; /* Largura mínima para Doméstico/Silvestre */
+            height: 1.6em;
+            border-bottom: 4px solid #f9a03f;
+            background-color: #ffffff;
+            margin: 0 5px;
+            padding: 0 5px;
+            transition: background-color 0.3s, border-color 0.3s;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.6em;
+            color: #333;
+            font-weight: 900;
+            cursor: default;
+        }
+        
+        .drop-blank-3 {
+            min-width: 100px; /* Largura menor para os produtos */
+        }
+
+        .drop-blank.drag-over {
+            background-color: #a5d6a7; 
+            border-bottom: 4px solid #4CAF50;
+        }
+        
+        .drop-blank.correct {
+            border-bottom: 4px solid #4CAF50;
+            background-color: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* --- ESTILOS ESPECÍFICOS DO JOGO 4 (TRANSPORTES E PLACAS) --- */
+        
+        .btn-transportes { background-color: #0288d1; } /* Azul J4 */
+        .btn-transportes:hover { background-color: #039be5; }
+
+        .btn-placas { background-color: #d32f2f; } /* Vermelho J4 */
+        .btn-placas:hover { background-color: #e53935; }
+
+        #transportes-game-wrapper {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            color: #333;
+            text-align: center;
+            padding: 0;
+        }
+        
+        #game4-view {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 8px solid #ff9800;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            min-height: 400px;
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        #game4-view h2 {
+            color: #d32f2f;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 0px #fff;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        
+        #menu-inicial-4 .menu-button {
+            text-align: center;
+            width: 80%;
+            margin: 15px auto;
+        }
+
+        #personagem-pequeno-4 {
+            width: 80px;
+            float: right;
+        }
+
+        #titulo-modo-4 {
+            color: #00796b;
+            background-color: #e0f2f1;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        #texto-pergunta-4 {
+            font-size: 1.4em;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #444;
+            clear: both;
+        }
+
+        #imagem-jogo-4 {
+            max-width: 180px;
+            max-height: 180px;
+            border: 4px solid #333;
+            border-radius: 10px;
+            margin: 10px auto;
+            display: none;
+            background-color: #fff;
+        }
+        
+        .btn-resposta-4 {
+            display: block;
+            width: 90%;
+            margin: 10px auto;
+            padding: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #fff;
+            color: #333;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-resposta-4:hover {
+            background-color: #f1f1f1;
+            border-color: #999;
+        }
+
+        #feedback-4 {
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 1.5em;
+            margin-top: 15px;
+        }
+
+        #btn-proxima-4, #btn-voltar-menu-4 {
+            background-color: #ff9800;
+            color: white;
+            font-size: 1.3em;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            border-bottom: 5px solid #ef6c00;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: inherit;
+            display: inline-block;
+        }
+        
+        #btn-voltar-menu-4 {
+            background-color: #757575;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            margin-top: 30px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* --- ESTILOS ESPECÍFICOS DO JOGO 5 (ASSOCIAÇÃO DE MATERIAIS) --- */
+        #game5-view {
+             border: 3px solid #1a73e8;
+        }
+
+        #jogo5-interface {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; 
+        }
+
+        .materials-grid-5, .categories-grid-5 {
+            flex: 1;
+            min-width: 280px;
+            display: grid;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f7f7f7;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .materials-grid-5 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .categories-grid-5 {
+            grid-template-columns: 1fr;
+        }
+
+        .material-item-5 {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #ccc;
+            transition: all 0.2s;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .material-item-5.selected {
+            border-color: #fbbc05;
+            background-color: #fffde7;
+            transform: scale(1.05);
+        }
+
+        .material-item-5.matched {
+            visibility: hidden; 
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .material-item-5 img {
+            width: 100%;
+            max-width: 80px;
+            height: auto;
+            border-radius: 4px;
+            display: block;
+            margin: 0 auto 5px;
+        }
+
+        .category-item-5 {
+            cursor: pointer;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #4285f4;
+            background-color: #e6eefd;
+            color: #1a73e8;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .category-item-5:hover:not(.success-pulse) {
+            background-color: #d2e3fc;
+        }
+        
+        .category-content-5 {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .material-inside-box-5 {
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            width: 70px; 
+            transition: transform 0.3s;
+            animation: fadeIn 0.5s;
+        }
+
+        .material-inside-box-5 p {
+            font-size: 0.7em;
+            margin: 0;
+            line-height: 1.2;
+            color: #333;
+        }
+        .material-inside-box-5 img {
+            max-width: 40px; 
+            margin: 0 auto;
+        }
+
+        .category-item-5.success-pulse {
+            background-color: #34a853; 
+            color: white;
+            border-color: #34a853;
+            animation: pulse-correct 0.3s ease-in-out;
+        }
+
+        /* --- ESTILOS DO JOGO 6 (ANTÔNIMOS) --- */
+        #game6-view {
+            border: 4px solid #9C27B0;
+            background-color: #f3e5f5;
+        }
+
+        .sentence-card {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 1.8em;
+            color: #4A148C;
+        }
+
+        .highlight-word {
+            color: #9C27B0;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .drop-zone-6 {
+            display: inline-block;
+            min-width: 150px;
+            border-bottom: 4px solid #9C27B0;
+            background-color: #f3e5f5;
+            margin: 0 10px;
+            padding: 0 10px;
+            text-align: center;
+            vertical-align: middle;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .drop-zone-6.hovered {
+            background-color: #E1BEE7;
+            transform: scale(1.05);
+        }
+
+        .drop-zone-6.correct {
+            background-color: #C8E6C9;
+            border-color: #2E7D32;
+            color: #2E7D32;
+        }
+
+        .options-container-6 {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .word-option-6 {
+            padding: 15px 25px;
+            font-size: 1.3em;
+            background-color: #BA68C8;
+            color: white;
+            border-radius: 50px;
+            cursor: grab;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            font-weight: bold;
+            border: 2px solid white;
+            touch-action: none; /* CRÍTICO PARA O ARRASTAR FUNCIONAR NO MOBILE */
+        }
+
+        .word-option-6:hover {
+            transform: scale(1.05);
+            background-color: #AB47BC;
+        }
+        
+        .word-option-6:active {
+            cursor: grabbing;
+        }
+
+        /* --- ESTILOS DO JOGO 7 (SINÔNIMOS) --- */
+        #game7-view {
+            border: 4px solid #E91E63;
+            background-color: #fff0f5; /* Rosa claro */
+        }
+
+        #synonyms-game-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .synonym-col {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .synonym-col h3 {
+            color: #C2185B;
+            margin-bottom: 10px;
+        }
+
+        .synonym-card {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            border: 3px solid transparent;
+        }
+
+        .synonym-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Estado inicial da Coluna 2 (Cinza/Branco) */
+        .synonym-card.uncolored {
+            background-color: #f5f5f5;
+            color: #555;
+            border: 3px solid #ccc;
+            text-shadow: none;
+        }
+
+        /* Estado Selecionado (Coluna 1) */
+        .synonym-card.selected {
+            transform: scale(1.1);
+            border-color: #333;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        /* Estado Correspondido (Bloqueado) */
+        .synonym-card.matched {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.9;
+            border-color: white;
+        }
+
+        /* Animação de Erro */
+        @keyframes shake-card {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake-animation {
+            animation: shake-card 0.4s ease-in-out;
+        }
+
+        /* --- ESTILOS DO JOGO 8 (PRONOMES - ARRASTAR) --- */
+        #game8-view {
+            border: 4px solid #009688;
+            background-color: #e0f2f1;
+        }
+        
+        /* Layout Flexível para Jogo 8 */
+        .game8-layout {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .game8-left-panel {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .game8-right-panel {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #b2dfdb;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+        }
+
+        .game8-right-panel h3 {
+            color: #00796b;
+            margin-top: 0;
+            border-bottom: 2px solid #009688;
+            padding-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        #completed-list-8 {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+
+        #completed-list-8 li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ccc;
+            font-size: 1.1em;
+            color: #333;
+            animation: fadeIn 0.5s;
+        }
+        
+        #completed-list-8 li strong {
+            color: #009688;
+        }
+        
+        .sentence-box-8 {
+            font-size: 1.6em;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            line-height: 2;
+            color: #004d40;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .drop-zone-8 {
+            display: inline-block;
+            min-width: 100px;
+            height: 1.5em;
+            border-bottom: 4px solid #009688;
+            background-color: #f0fdfc;
+            margin: 0 5px;
+            padding: 0 10px;
+            text-align: center;
+            vertical-align: middle; 
+            color: #333;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone-8.hovered {
+            background-color: #b2dfdb;
+            transform: scale(1.05);
+        }
+
+        .drop-zone-8.correct-8 {
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            border-bottom-color: #2E7D32;
+            pointer-events: none; /* Bloqueia */
+        }
+
+        .pronoun-bank {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 15px;
+        }
+        
+        .drag-pronoun {
+            background-color: #009688;
+            color: white;
+            font-size: 1.4em;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: grab;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+            font-weight: bold;
+            transition: transform 0.2s;
+            touch-action: none;
+        }
+        
+        .drag-pronoun:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .esconder {
+            display: none !important;
+        }
+
+        /* Animações (Globais ou Reutilizadas) */
+        @keyframes pulse-correct {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Media Queries para Responsividade Móvel */
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            .game-container { flex-direction: column; }
+            .coluna { width: 95%; margin: 10px auto; }
+            .drag-items-container { grid-template-columns: 1fr; }
+            .menu-button { font-size: 1.2em; padding: 15px; text-align: center; }
+
+            /* Jogo 2 & 3 Mobile Adjustments */
+            .current-animal-image { width: 100px; height: 100px; }
+            .story-container { font-size: 1.2em; padding: 15px; width: 95%; }
+            .drop-blank { min-width: 100px; font-size: 1em; line-height: 1.4em; height: 1.4em; margin: 0 2px;}
+            .drag-word { font-size: 1em; padding: 8px 12px; }
+            
+            /* Jogo 4 Mobile Adjustments */
+            #game4-view { padding: 15px; border: 4px solid #ff9800; }
+            #personagem-pequeno-4 { display: none; }
+            #titulo-modo-4 { font-size: 1.2em; }
+            #texto-pergunta-4 { font-size: 1.1em; }
+            #imagem-jogo-4 { max-width: 120px; max-height: 120px; }
+            .btn-resposta-4 { font-size: 1em; padding: 10px; }
+
+            /* Jogo 5 Mobile Adjustments */
+            #jogo5-interface { flex-direction: column; }
+            .materials-grid-5, .categories-grid-5 { width: 100%; min-width: unset; }
+            .materials-grid-5 { grid-template-columns: repeat(3, 1fr); }
+            
+            /* Jogo 6 Mobile Adjustments */
+            .sentence-card { font-size: 1.3em; padding: 20px; }
+            .word-option-6 { font-size: 1em; padding: 10px 20px; }
+
+            /* Jogo 7 Mobile Adjustments */
+            #synonyms-game-container { flex-direction: column; gap: 20px; }
+            .synonym-col { width: 100%; }
+            
+            /* Jogo 8 Mobile Adjustments */
+            .game8-layout { flex-direction: column; }
+            .game8-right-panel { width: 90%; margin: 0 auto; }
+            .sentence-box-8 { font-size: 1.2em; padding: 15px; }
+            .drag-pronoun { width: auto; font-size: 1.1em; padding: 10px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        
+        <!-- 1. TELA DE MENU PRINCIPAL (Plataforma) -->
+        <div id="menu-view" class="view">
+            <h1>Plataforma de Jogos Educativos 🚀</h1>
+            <p class="menu-title">Escolha um Tema para Jogar</p>
+            <div class="menu-buttons">
+                <!-- Botão 1: Ciências Naturais -->
+                <button class="menu-button btn-game1" onclick="showScienceMenu()">
+                    1. Jogos de Ciências Naturais (4 em 1) 🧪
+                </button>
+                <!-- Botão 2: Língua Portuguesa -->
+                <button class="menu-button btn-game6" onclick="showPortugueseMenu()">
+                    2. Jogos de Língua Portuguesa 📖
+                </button>
+                <!-- Botão 3: Transportes -->
+                <button class="menu-button btn-game4" onclick="startGame4()">
+                    3. Jogo de Transportes e Placas 🛑
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. TELA DO SUBMENU DE CIÊNCIAS -->
+        <div id="science-menu-view" class="view" style="display:none;">
+            <h2>Jogos de Ciências Naturais 🧪</h2>
+            <p class="instrucao">Selecione uma categoria para começar.</p>
+            <div class="menu-buttons">
+                <button class="menu-button btn-game1" onclick="startGame1()">
+                    1. Animais e sua Alimentação 🍎🥩
+                </button>
+                <button class="menu-button btn-game2" onclick="startGame2()">
+                    2. Animais Silvestres e Domésticos 🐒🐶
+                </button>
+                <button class="menu-button btn-game3" onclick="startGame3()">
+                    3. Produtos dos Animais 🥛🥚
+                </button>
+                <button class="menu-button btn-game5" onclick="startGame5()">
+                    4. Origem dos Materiais 🪵🪨
+                </button>
+            </div>
+             <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+            </div>
+        </div>
+        
+        <!-- 2.1. TELA DO SUBMENU DE PORTUGUÊS -->
+        <div id="portuguese-menu-view" class="view" style="display:none;">
+            <h2>Jogos de Língua Portuguesa 📖</h2>
+            <p class="instrucao">Vamos brincar com as palavras?</p>
+            <div class="menu-buttons">
+                <button class="menu-button btn-game6" onclick="startGame6()">
+                    1. Antônimos: O Jogo dos Contrários↔️
+                </button>
+                <button class="menu-button btn-game7" onclick="startGame7()">
+                    2. Sinônimos: O Jogo dos Pares 🎨
+                </button>
+                <button class="menu-button btn-game8" onclick="startGame8()">
+                    3. Pronomes: Quem é Quem? 🙋‍♂️
+                </button>
+            </div>
+             <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+            </div>
+        </div>
+        
+        <!-- JOGO 1: ALIMENTAÇÃO -->
+        <div id="game1-view" class="view" style="display:none;">
+            <h2>Jogo 1: Animais e sua Alimentação 🍎🥩🌿</h2>
+            <p class="instrucao">Arraste cada animal para o grupo alimentar correto.</p>
+
+            <div id="score-board-1" class="score-board">Pontos: <span id="current-score-1">0</span> / 16</div>
+
+            <div class="game-container">
+                <div class="coluna" id="drag-column-1">
+                    <h2>Animais</h2>
+                    <div id="drag-items-container-1" class="drag-items-container">
+                        <!-- Itens gerados via JS -->
+                    </div>
+                </div>
+
+                <div class="coluna" id="drop-column-1">
+                    <h2>Grupos Alimentares</h2>
+                    <div class="drop-target" data-target="Herbívoro" id="target-Herbívoro">
+                        <span class="group-name">Herbívoros</span> 
+                        <span class="group-desc">(Comem Plantas) 🌿</span>
+                        <div class="drop-target-content"></div>
+                    </div>
+                    <div class="drop-target" data-target="Carnívoro" id="target-Carnívoro">
+                        <span class="group-name">Carnívoros</span> 
+                        <span class="group-desc">(Comem Carne) 🥩</span>
+                        <div class="drop-target-content"></div>
+                    </div>
+                    <div class="drop-target" data-target="Onívoro" id="target-Onívoro">
+                        <span class="group-name">Onívoros</span> 
+                        <span class="group-desc">(Comem Tudo) 🍎🥩</span>
+                        <div class="drop-target-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showScienceMenu()">Voltar ao Menu de Ciências</button>
+                <button class="control-button" onclick="startGame1()">Reiniciar Jogo</button>
+            </div>
+        </div>
+
+        <!-- JOGO 2: HISTÓRIAS -->
+        <div id="game2-view" class="view" style="display:none;">
+            <h2>Jogo 2: Silvestres e Domésticos - Complete a História 📚</h2>
+            <p class="instrucao">Arraste a classificação correta para o espaço vazio.</p>
+            <div id="score-board-2" class="score-board">Pontos: <span id="current-score-2">0</span> / 10</div>
+            <div id="game2-content">
+                <img id="current-animal-image-2" class="current-animal-image" src="" alt="Animal">
+                <div id="draggable-options-2" class="draggable-options-container">
+                    <div class="drag-word" draggable="true" data-word="Doméstico" id="word-domestico">Animal Doméstico 🏡</div>
+                    <div class="drag-word" draggable="true" data-word="Silvestre" id="word-silvestre">Animal Silvestre 🌳</div>
+                </div>
+                <div id="story-container-2" class="story-container">
+                    <p id="current-story-text-2">Clique em Reiniciar Jogo para começar!</p>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showScienceMenu()">Voltar ao Menu de Ciências</button>
+                <button class="control-button" onclick="startGame2()">Reiniciar Jogo</button>
+            </div>
+        </div>
+        
+        <!-- JOGO 3: PRODUTOS -->
+        <div id="game3-view" class="view" style="display:none;">
+            <h2>Jogo 3: Produtos dos Animais - O que cada um nos dá? 🥛</h2>
+            <p class="instrucao">Arraste os nomes dos produtos para as lacunas corretas.</p>
+            <div id="score-board-3" class="score-board">Pontos: <span id="current-score-3">0</span> / 11</div>
+            <div id="game3-content">
+                <img id="current-animal-image-3" class="current-animal-image" src="" alt="Animal">
+                <div id="draggable-options-3" class="draggable-options-container"></div>
+                <div id="story-container-3" class="story-container">
+                    <p id="current-story-text-3">Clique em Reiniciar Jogo para começar!</p>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showScienceMenu()">Voltar ao Menu de Ciências</button>
+                <button class="control-button" onclick="startGame3()">Reiniciar Jogo</button>
+                <button class="control-button btn-game3" id="btn-next-3" onclick="skipStory3()">Próximo >></button>
+            </div>
+        </div>
+
+        <!-- JOGO 5: MATERIAIS -->
+        <div id="game5-view" class="view" style="display:none;">
+            <h2 style="color: #1a73e8;">Jogo 4: Origem dos Materiais 🪵🪨</h2>
+            <p class="instrucao-5" class="instrucao">Clique em um Material (esquerda) e depois na sua Categoria (direita).</p>
+            <div class="score-board">Pares: <span id="pontuacao-5">0</span> / <span id="total-pares-5">0</span></div>
+            <div id="jogo5-interface">
+                <div id="materials-grid-5" class="materials-grid-5"></div>
+                <div id="categories-grid-5" class="categories-grid-5"></div>
+            </div>
+            <div id="resultado-5" class="esconder">
+                <h3 style="color:#34a853; font-size:2em;">Parabéns! Jogo Concluído! 🎉</h3>
+                <p id="pontuacao-final-5" style="font-size: 1.5em; font-weight: bold; color: #1a73e8;"></p>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showScienceMenu()">Voltar ao Menu de Ciências</button>
+                <button class="control-button btn-game5" onclick="startGame5()">Reiniciar Jogo</button>
+            </div>
+        </div>
+        
+        <!-- JOGO 6: ANTÔNIMOS -->
+        <div id="game6-view" class="view" style="display:none;">
+            <h2 style="color: #9C27B0;">Jogo de Antônimos: O Jogo dos Contrários ↔️</h2>
+            <p class="instrucao">Leia a frase e arraste o antônimo (contrário) para a lacuna.</p>
+            <div class="score-board">Questão: <span id="current-q-6">1</span> / <span id="total-q-6">0</span></div>
+            <div id="question-area-6" style="min-height: 300px;">
+                <div class="sentence-card">
+                    <p id="sentence-text-6">Carregando...</p>
+                </div>
+                <div id="options-container-6" class="options-container-6"></div>
+            </div>
+            <div id="feedback-6" style="height: 30px; margin: 10px; font-weight: bold; font-size: 1.2em;"></div>
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showPortugueseMenu()">Voltar ao Menu de Português</button>
+                <button class="control-button btn-game6" onclick="startGame6()">Reiniciar</button>
+            </div>
+        </div>
+
+        <!-- JOGO 7: SINÔNIMOS -->
+        <div id="game7-view" class="view" style="display:none;">
+            <h2 style="color: #E91E63;">Jogo de Sinônimos: O Jogo dos Pares 🎨</h2>
+            <p class="instrucao">Clique em uma palavra na coluna colorida e depois encontre seu par na coluna cinza!</p>
+            <div class="score-board">Pares: <span id="current-score-7">0</span> / 10</div>
+            <div id="synonyms-game-container">
+                <div class="synonym-col" id="synonyms-col-1"><h3>Palavras</h3></div>
+                <div class="synonym-col" id="synonyms-col-2"><h3>Sinônimos</h3></div>
+            </div>
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showPortugueseMenu()">Voltar ao Menu de Português</button>
+                <button class="control-button btn-game7" onclick="startGame7()">Reiniciar</button>
+            </div>
+        </div>
+
+        <!-- JOGO 8: PRONOMES (NOVO - ARRASTAR COM LISTA) -->
+        <div id="game8-view" class="view" style="display:none;">
+            <h2 style="color: #009688;">Jogo 8: Pronomes Retos - Quem é Quem? 🙋‍♂️</h2>
+            <p class="instrucao">Arraste o pronome correto para completar a frase.</p>
+
+            <div class="score-board">Questão: <span id="current-q-8">1</span> / <span id="total-q-8">0</span></div>
+
+            <div class="game8-layout">
+                <!-- Painel Esquerdo: Pergunta Ativa -->
+                <div class="game8-left-panel">
+                    <div id="question-area-8">
+                        <div class="sentence-box-8">
+                            <p id="sentence-text-8" style="margin: 0;">Carregando...</p>
+                        </div>
+                        
+                        <p style="margin-bottom: 5px; color: #555; font-weight: bold;">Banco de Pronomes:</p>
+                        <div id="pronoun-bank-8" class="pronoun-bank">
+                            <!-- Pronomes Fixos -->
+                            <div class="drag-pronoun" draggable="true" data-word="Eu">Eu</div>
+                            <div class="drag-pronoun" draggable="true" data-word="Ele">Ele</div>
+                            <div class="drag-pronoun" draggable="true" data-word="Ela">Ela</div>
+                            <div class="drag-pronoun" draggable="true" data-word="Nós">Nós</div>
+                            <div class="drag-pronoun" draggable="true" data-word="Eles">Eles</div>
+                            <div class="drag-pronoun" draggable="true" data-word="Elas">Elas</div>
+                        </div>
+                    </div>
+                    <div id="feedback-8" style="height: 30px; margin: 10px; font-weight: bold; font-size: 1.2em;"></div>
+                </div>
+
+                <!-- Painel Direito: Lista de Frases Corretas -->
+                <div class="game8-right-panel">
+                    <h3>Frases Completas ✅</h3>
+                    <ul id="completed-list-8">
+                        <!-- Itens adicionados dinamicamente -->
+                    </ul>
+                </div>
+            </div>
+
+            <div class="game-controls">
+                <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                <button class="control-button" onclick="showPortugueseMenu()">Voltar ao Menu de Português</button>
+                <button class="control-button btn-game8" onclick="startGame8()">Reiniciar</button>
+            </div>
+        </div>
+
+        <!-- JOGO 4: TRANSPORTES -->
+        <div id="game4-view" class="view" style="display:none;">
+            <div id="transportes-game-wrapper">
+                <h2 style="color: #d32f2f; font-size: 2.2em; text-shadow: 1px 1px 0px #fff; margin-bottom: 10px; margin-top: 10px;">
+                    🚦 Aventura no Trânsito 🛑
+                </h2>
+                <div id="menu-inicial-4">
+                    <p style="font-size: 1.3em;">Olá! Vamos aprender se divertindo?<br>Escolha um jogo:</p>
+                    <img src="guga_personagem.png" alt="Guga" style="height: 150px; margin-bottom: 10px;">
+                    <button class="menu-button btn-transportes" onclick="iniciarModoJ4('transportes')">🚗 Jogar TRANSPORTES</button>
+                    <button class="menu-button btn-placas" onclick="iniciarModoJ4('placas')">🛑 Jogar PLACAS</button>
+                    <div style="margin-top: 25px;">
+                        <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                    </div>
+                </div>
+                <div id="tela-jogo-4" style="display: none;">
+                    <div style="overflow: hidden; margin-bottom: 10px; padding-top: 20px;">
+                        <img id="personagem-pequeno-4" src="guga_personagem.png" alt="Guga">
+                        <h3 id="titulo-modo-4">Modo</h3>
+                    </div>
+                    <div id="area-pergunta-4">
+                        <p id="texto-pergunta-4">Pergunta aqui...</p>
+                        <img id="imagem-jogo-4" src="" alt="">
+                        <div id="lista-botoes-4"></div>
+                    </div>
+                    <div id="feedback-4"></div>
+                    <button id="btn-proxima-4" onclick="proximaPerguntaJ4()" style="display: none;">Próxima Pergunta >></button>
+                    <div class="game-controls">
+                        <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                        <button class="control-button" onclick="voltarAoMenuJ4()">Voltar ao Menu de Transportes</button>
+                        <button class="control-button" onclick="iniciarModoJ4(modoAtual4)">Reiniciar Jogo</button>
+                    </div>
+                </div>
+                <div id="tela-fim-4" style="display: none;">
+                    <h3 style="color: #2e7d32; font-size: 2em;">Parabéns! 🎉</h3>
+                    <p id="texto-pontuacao-4" style="font-size: 1.5em;">Você acertou X de Y!</p>
+                    <p id="mensagem-final-4"></p>
+                    <div class="game-controls">
+                        <button class="control-button" onclick="showMenu()">Voltar ao Menu Principal</button>
+                        <button class="control-button" onclick="voltarAoMenuJ4()">Voltar ao Menu de Transportes</button>
+                        <button class="control-button" onclick="iniciarModoJ4(modoAtual4)">Reiniciar Jogo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // --- DADOS DOS JOGOS DE CIÊNCIAS (1, 2, 3) ---
+
+        // JOGO 1: ALIMENTAÇÃO (16 ITENS)
+        const animals1 = [
+            // Herbívoros
+            { name: "Capivara", group: "Herbívoro", file: "capivara.png" },
+            { name: "Boi", group: "Herbívoro", file: "boi.png" },
+            { name: "Cavalo", group: "Herbívoro", file: "cavalo.png" },
+            { name: "Coelho", group: "Herbívoro", file: "coelho.png" },
+            { name: "Rinoceronte", group: "Herbívoro", file: "rinoceronte.png" },
+            // Carnívoros
+            { name: "Lobo", group: "Carnívoro", file: "lobo.png" },
+            { name: "Leão", group: "Carnívoro", file: "leao.png" },
+            { name: "Cobra", group: "Carnívoro", file: "cobra.png" },
+            { name: "Coruja", group: "Carnívoro", file: "coruja.png" },
+            // Onívoros
+            { name: "Galinha", group: "Onívoro", file: "galinha.png" },
+            { name: "Porco", group: "Onívoro", file: "porco.png" },
+            { name: "Pessoas", group: "Onívoro", file: "pessoas.png" },
+            { name: "Macaco", group: "Onívoro", file: "macaco.png" },
+            { name: "Rato", group: "Onívoro", file: "rato.png" },
+            { name: "Pato", group: "Onívoro", file: "pato.png" },
+            { name: "Cachorro Doméstico", group: "Onívoro", file: "cachorro.png" },
+            { name: "Gato", group: "Onívoro", file: "gato.png" },
+        ];
+        const totalItems1 = animals1.length;
+        
+        // JOGO 2: HISTÓRIAS (10 ITENS - Randomizados)
+        const stories2 = [
+            { animal: "Leão", type: "Silvestre", hint: "vive livremente na savana, caçando zebras e búfalos.", file: "leao.png" },
+            { animal: "Cachorro Doméstico", type: "Doméstico", hint: "vive em nossas casas e depende de nós para comida e carinho.", file: "cachorro.png" },
+            { animal: "Macaco", type: "Silvestre", hint: "passa a vida pulando em árvores altas e vive em grandes grupos na floresta.", file: "macaco.png" },
+            { animal: "Galinha", type: "Doméstico", hint: "é criada em um galinheiro para nos dar ovos e carne deliciosa.", file: "galinha.png" },
+            { animal: "Coruja", type: "Silvestre", hint: "caça ratos e insetos de noite, dormindo durante o dia no alto das árvores.", file: "coruja.png" },
+            { animal: "Gato", type: "Doméstico", hint: "pode viver dentro de casa, miando por carinho e brincando com novelos.", file: "gato.png" },
+            { animal: "Boi", type: "Doméstico", hint: "é criado em pastos e fazendas para o nosso consumo de carne e leite.", file: "boi.png" },
+            { animal: "Cobra", type: "Silvestre", hint: "vive rastejando pela terra ou subindo em árvores em busca de pequenos pássaros.", file: "cobra.png" },
+            { animal: "Coelho", type: "Doméstico", hint: "pode ser criado em gaiolas em casa, comendo cenouras e feno.", file: "coelho.png" },
+            { animal: "Rinoceronte", type: "Silvestre", hint: "é um animal grande e pesado que vive solto na natureza, em risco de extinção.", file: "rinoceronte.png" },
+        ];
+        const totalStories2 = stories2.length; // 10 histórias
+
+        // JOGO 3: PRODUTOS DOS ANIMAIS (5 Histórias, 11 Gaps no total)
+        const productsData3 = [
+            { 
+                animal: "Abelha", 
+                file: "abelha.png", 
+                story: "A abelha voa entre as flores para colher o néctar e nos dá o [Mel], além de [Cera] para fazer velas e outros produtos.", 
+                products: ["Mel", "Cera"] 
+            },
+            { 
+                animal: "Ovelha", 
+                file: "ovelha.png", 
+                story: "A ovelha tem um pelo macio que é tosado. Com ele, fazemos o fio de [Lã] para roupas quentinhas.", 
+                products: ["Lã"] 
+            },
+            { 
+                animal: "Boi", 
+                file: "boi.png", 
+                story: "O boi é muito útil! Nos fornece o [Leite], a [Carne], o [Couro] para sapatos e bolsas, e até o [Chifre] para artesanato.", 
+                products: ["Leite", "Carne", "Couro", "Chifre"] 
+            },
+            { 
+                animal: "Porco", 
+                file: "porco.png", 
+                story: "O porco é aproveitado totalmente. Dele, tiramos a [Carne] que comemos, e também a [Gordura] para cozinhar.", 
+                products: ["Carne", "Gordura"] 
+            },
+            { 
+                animal: "Tubarão", 
+                file: "tubarao.png", 
+                story: "O tubarão, que vive no mar, é usado para fazer [Óleo] e a sua [Barbatana] é usada em alguns lugares para fazer remédio.", 
+                products: ["Óleo", "Barbatana"] 
+            },
+        ];
+        
+        // Lista total de produtos (palavras arrastáveis)
+        const allProducts = ["Mel", "Cera", "Lã", "Leite", "Carne", "Couro", "Chifre", "Gordura", "Óleo", "Barbatana"];
+        const totalStories3 = productsData3.length;
+        
+        let totalGaps3 = 0;
+        productsData3.forEach(data => totalGaps3 += data.products.length); // 11 Gaps
+
+        // --- VARIÁVEIS DE ESTADO GLOBAL (COMPARTILHADAS JOGOS 1, 2, 3) ---
+        let currentScore = 0;
+        let matchedItems = 0;
+        let gameActive = false;
+        let currentGameId = 0; // 1 para Jogo 1, 2 para Jogo 2, 3 para Jogo 3, 4 para Jogo 4
+        let currentStoryIndex2 = 0; // Índice atual para Jogo 2
+        let unansweredStories3 = []; // Fila de histórias não respondidas para o Jogo 3
+
+
+        // --- DADOS DO JOGO 4: TRANSPORTES E PLACAS ---
+        const dadosTransportes4 = [
+            { p: "Guga precisa levar cargas pesadas. Qual veículo terrestre grande ele usa?", r: "Caminhão", alts: ["Bicicleta", "Caminhão", "Carro"], img: "caminhao.png" },
+            { p: "Veículo aéreo, sem asas, mas com hélices. Qual é?", r: "Helicóptero", alts: ["Avião", "Helicóptero", "Balsa"], img: "helicoptero.png" },
+            { p: "Transporte terrestre coletivo mais comum nas cidades para levar muita gente.", r: "Ônibus", alts: ["Ônibus", "Moto", "Navio"], img: "onibus.png" },
+            { p: "Veículo usado nas ciclovias, que a gente pedala.", r: "Bicicleta", alts: ["Carro", "Bicicleta", "Metrô"], img: "bicicleta.png" },
+            { p: "Transporte usado pelas famílias, taxistas e Uber.", r: "Carro", alts: ["Navio", "Trem", "Carro"], img: "carro.png" },
+            { p: "Transporte aquático grande, para levar pessoas ou cargas pela água.", r: "Navio", alts: ["Navio", "Avião", "Bicicleta"], img: "navio.png" },
+            { p: "Transporte rápido que anda sobre trilhos nas grandes cidades.", r: "Metrô", alts: ["Balsa", "Metrô", "Carro"], img: "metro.png" },
+            { p: "Transporte aéreo usado para ir a lugares muito distantes.", r: "Avião", alts: ["Avião", "Caminhão", "Navio"], img: "aviao.png" },
+            { p: "Barco grande e chato usado para levar carros de um lado do rio ao outro.", r: "Balsa", alts: ["Canoa", "Balsa", "Avião"], img: "balsa.png" }
+        ];
+
+        const dadosPlacas4 = [
+            { p: "Esta placa vermelha obriga o motorista a fazer o quê?", r: "Pare", alts: ["Acelerar", "Pare", "Buzinar"], img: "placa_pare.png" },
+            { p: "Esta placa com um número indica o limite de...", r: "Velocidade", alts: ["Peso", "Velocidade", "Altura"], img: "placa_velocidade.png" },
+            { p: "O 'E' cortado com vermelho diz que é proibido...", r: "Estacionar", alts: ["Estudar", "Estacionar", "Entrar"], img: "placa_estacionar.png" },
+            { p: "O que esta placa proíbe nesta rua?", r: "Bicicleta", alts: ["Bicicleta", "Carro", "Pedestre"], img: "placa_bicicleta.png" },
+            { p: "Esta placa amarela avisa para ter cuidado com...", r: "Pedestres", alts: ["Animais", "Pedestres", "Buracos"], img: "placa_faixa.png" }
+        ];
+
+        // Variáveis de estado Jogo 4
+        let perguntasAtuais4 = [];
+        let indiceAtual4 = 0;
+        let pontuacao4 = 0;
+        let modoAtual4 = ""; 
+        
+        // --- DADOS E VARIÁVEIS DO JOGO 5: ORIGEM DOS MATERIAIS ---
+        // ATUALIZADO: Imagens locais (.png)
+        const materiais5 = [
+            { id: 1, name: "Madeira", category: "Vegetal", imageAlt: "Tronco de árvore", imageUrl: "madeira.png" },
+            { id: 2, name: "Lã", category: "Animal", imageAlt: "Fios de lã de ovelha", imageUrl: "la.png" },
+            { id: 3, name: "Areia", category: "Mineral", imageAlt: "Pilha de Areia", imageUrl: "areia.png" },
+            { id: 4, name: "Plástico", category: "Artificial", imageAlt: "Garrafa PET", imageUrl: "plastico.png" },
+            { id: 5, name: "Algodão", category: "Vegetal", imageAlt: "Flor de Algodão", imageUrl: "algodao.png" },
+            { id: 6, name: "Couro", category: "Animal", imageAlt: "Pedaço de Couro", imageUrl: "couro.png" },
+            { id: 7, name: "Petróleo", category: "Mineral", imageAlt: "Óleo Bruto Escuro", imageUrl: "petroleo.png" },
+            { id: 8, name: "Vidro", category: "Artificial", imageAlt: "Copo de Vidro", imageUrl: "vidro.png" }
+        ];
+
+        const categorias5 = [
+            { name: "Origem Vegetal", value: "Vegetal" }, 
+            { name: "Origem Animal", value: "Animal" }, 
+            { name: "Origem Mineral", value: "Mineral" }, 
+            { name: "Artificial", value: "Artificial" }
+        ];
+
+        let materiaisDisponiveis5 = [];
+        let pontuacao5 = 0;
+        let selectedMaterialId5 = null;
+
+        // --- DADOS DO JOGO 6: ANTÔNIMOS ---
+        const antonymsData = [
+            { w: "Bonito", a: "Feio", s: "O jardim é <span class='highlight-word'>bonito</span>, mas o lixão é ______.", d: ["Cheiroso", "Feio", "Colorido"] },
+            { w: "Cheio", a: "Vazio", s: "O copo estava <span class='highlight-word'>cheio</span>, agora está ______.", d: ["Quente", "Largo", "Vazio"] },
+            { w: "Transparente", a: "Opaco", s: "O vidro é <span class='highlight-word'>transparente</span>, mas o tijolo é ______.", d: ["Opaco", "Brilhante", "Mole"] },
+            { w: "Salgado", a: "Doce", s: "O salgadinho é <span class='highlight-word'>salgado</span>, o bolo é ______.", d: ["Doce", "Azedo", "Frio"] },
+            { w: "Fraco", a: "Forte", s: "O gatinho é <span class='highlight-word'>fraco</span>, mas o leão é ______.", d: ["Lento", "Forte", "Triste"] },
+            { w: "Largo", a: "Estreito", s: "O rio é <span class='highlight-word'>largo</span>, mas o riacho é ______.", d: ["Estreito", "Alto", "Rápido"] },
+            { w: "Bem", a: "Mal", s: "O herói se comportou <span class='highlight-word'>bem</span>, mas o vilão se comportou ______.", d: ["Feliz", "Mal", "Rápido"] },
+            { w: "Lento", a: "Rápido", s: "O caracol é <span class='highlight-word'>lento</span>, mas o coelho é ______.", d: ["Alto", "Rápido", "Verde"] },
+            { w: "Comprido", a: "Curto", s: "O trem é <span class='highlight-word'>comprido</span>, mas o fusca é ______.", d: ["Curto", "Belo", "Gordo"] },
+            { w: "Muito", a: "Pouco", s: "Eu tenho <span class='highlight-word'>muito</span> sono, mas tenho ______ tempo.", d: ["Longo", "Pouco", "Grande"] },
+            { w: "Pequeno", a: "Grande", s: "O rato é <span class='highlight-word'>pequeno</span>, mas o elefante é ______.", d: ["Grande", "Fino", "Rápido"] },
+            { w: "Vitória", a: "Derrota", s: "O time comemorou a <span class='highlight-word'>vitória</span> e o outro chorou a ______.", d: ["Festa", "Alegria", "Derrota"] },
+            { w: "Mole", a: "Duro", s: "O travesseiro é <span class='highlight-word'>mole</span>, mas o chão é ______.", d: ["Duro", "Fino", "Liso"] },
+            { w: "Claro", a: "Escuro", s: "O dia é <span class='highlight-word'>claro</span>, mas o túnel é ______.", d: ["Frio", "Escuro", "Belo"] },
+            { w: "Liso", a: "Áspero", s: "O piso encerado é <span class='highlight-word'>liso</span>, o cimento é ______.", d: ["Áspero", "Mole", "Fino"] },
+            { w: "Achar", a: "Perder", s: "É bom <span class='highlight-word'>achar</span> uma moeda, mas é ruim ______.", d: ["Gastar", "Perder", "Ganhar"] },
+            { w: "Fino", a: "Grosso", s: "O fio de cabelo é <span class='highlight-word'>fino</span>, mas o tronco da árvore é ______.", d: ["Grosso", "Alto", "Mole"] },
+            { w: "Raso", a: "Fundo", s: "O prato de sobremesa é <span class='highlight-word'>raso</span>, mas o balde é ______.", d: ["Quente", "Fundo", "Largo"] }
+        ];
+
+        let questions6 = [];
+        let currentQIndex6 = 0;
+
+        // --- DADOS DO JOGO 7: SINÔNIMOS ---
+        const synonymsData = [
+            { a: "Longe", b: "Distante" },
+            { a: "Ouvir", b: "Escutar" },
+            { a: "Garoto", b: "Menino" },
+            { a: "Pular", b: "Saltar" },
+            { a: "Alegre", b: "Contente" },
+            { a: "Próximo", b: "Perto" },
+            { a: "Gostoso", b: "Saboroso" },
+            { a: "Acabar", b: "Finalizar" },
+            { a: "Início", b: "Começo" },
+            { a: "Perfume", b: "Aroma" }
+        ];
+
+        // 10 Cores Distintas para os pares
+        const synonymColors = [
+            "#F44336", // Vermelho
+            "#E91E63", // Rosa
+            "#9C27B0", // Roxo
+            "#3F51B5", // Indigo
+            "#2196F3", // Azul
+            "#009688", // Verde Água
+            "#4CAF50", // Verde
+            "#FBC02D", // Amarelo Escuro
+            "#FF9800", // Laranja
+            "#795548"  // Marrom
+        ];
+
+        let selectedCardCol1_7 = null; // { id, color }
+        let currentScore7 = 0;
+
+        // --- DADOS DO JOGO 8: PRONOMES ---
+        // Atualizado com contexto claro para evitar ambiguidade
+        const pronounsRealData = [
+            { s: "Julia e [BLANK] fomos ao cinema.", a: ["Eu"], full: "Julia e <strong>Eu</strong> fomos ao cinema." },
+            { s: "João é escritor. [BLANK] escreve muitos livros.", a: ["Ele"], full: "João é escritor. <strong>Ele</strong> escreve muitos livros." },
+            { s: "[BLANK] comi um bolo e a Ana estava cansada, então [BLANK] dormiu.", a: ["Eu", "Ela"], full: "<strong>Eu</strong> comi um bolo e a Ana estava cansada, então <strong>Ela</strong> dormiu." },
+            { s: "José foi passear. [BLANK] foi à praia.", a: ["Ele"], full: "José foi passear. <strong>Ele</strong> foi à praia." },
+            { s: "José e Marina foram ao Parque. [BLANK] brincaram muito.", a: ["Eles"], full: "José e Marina foram ao Parque. <strong>Eles</strong> brincaram muito." },
+            { s: "Mamãe tomou café. [BLANK] está muito feliz.", a: ["Ela"], full: "Mamãe tomou café. <strong>Ela</strong> está muito feliz." },
+            { s: "Eu adoro esportes. [BLANK] gosto de jogar bola.", a: ["Eu"], full: "Eu adoro esportes. <strong>Eu</strong> gosto de jogar bola." },
+            { s: "Eu e você somos um time. [BLANK] vamos ganhar o jogo.", a: ["Nós"], full: "Eu e você somos um time. <strong>Nós</strong> vamos ganhar o jogo." },
+            { s: "As meninas dançam balé. [BLANK] são muito talentosas.", a: ["Elas"], full: "As meninas dançam balé. <strong>Elas</strong> são muito talentosas." },
+            { s: "O gato miou alto. [BLANK] quer beber leite.", a: ["Ele"], full: "O gato miou alto. <strong>Ele</strong> quer beber leite." },
+            { s: "Bia é estudiosa. [BLANK] tira boas notas na escola.", a: ["Ela"], full: "Bia é estudiosa. <strong>Ela</strong> tira boas notas na escola." },
+            { s: "[BLANK] e meu irmão somos grandes amigos.", a: ["Eu"], full: "<strong>Eu</strong> e meu irmão somos grandes amigos." },
+            { s: "Os meninos correram na rua. [BLANK] chegaram cansados.", a: ["Eles"], full: "Os meninos correram na rua. <strong>Eles</strong> chegaram cansados." },
+            { s: "[BLANK] fui ao mercado e o vovô disse que [BLANK] ficou em casa.", a: ["Eu", "Ele"], full: "<strong>Eu</strong> fui ao mercado e o vovô disse que <strong>Ele</strong> ficou em casa." },
+            { s: "A flor murchou no vaso. [BLANK] precisava de mais água.", a: ["Ela"], full: "A flor murchou no vaso. <strong>Ela</strong> precisava de mais água." },
+            { s: "Ana e Bia cantaram no show. [BLANK] são ótimas cantoras.", a: ["Elas"], full: "Ana e Bia cantaram no show. <strong>Elas</strong> são ótimas cantoras." }
+        ];
+
+        let questions8 = [];
+        let currentQIndex8 = 0;
+
+
+        // --- LÓGICA DE NAVEGAÇÃO E UTILS ---
+
+        function showScreen(screenId) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => {
+                view.style.display = 'none';
+            });
+            // Verificação de segurança
+            const screen = document.getElementById(screenId);
+            if (screen) {
+                screen.style.display = 'block';
+            } else {
+                console.error("Screen not found: " + screenId);
+            }
+        }
+
+        function showMenu() {
+            gameActive = false;
+            currentGameId = 0;
+            showScreen('menu-view');
+        }
+
+        function showScienceMenu() {
+            showScreen('science-menu-view');
+        }
+
+        function showPortugueseMenu() {
+            showScreen('portuguese-menu-view');
+        }
+
+        function showPlaceholder(gameName) {
+            alert("Jogo em construção: " + gameName);
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // --- LÓGICA DO JOGO 1 (DRAG & DROP - ALIMENTAÇÃO) ---
+
+        // Função genérica para configurar o jogo 1 (Drag & Drop)
+        function setupGame1(animalData, totalItemsCount) {
+            currentGameId = 1;
+            showScreen(`game1-view`);
+            gameActive = true;
+            
+            // 1. Reinicializa a pontuação
+            currentScore = 0;
+            matchedItems = 0;
+            document.getElementById(`current-score-1`).textContent = currentScore;
+            
+            // Atualiza o total de itens no placar 
+            document.querySelector(`#score-board-1`).innerHTML = `Pontos: <span id="current-score-1">0</span> / ${totalItemsCount}`;
+
+            const dragItemsContainer = document.getElementById(`drag-items-container-1`); 
+            dragItemsContainer.innerHTML = ''; 
+            
+            // Limpa as caixas de destino
+            document.querySelectorAll('.drop-target-content').forEach(box => box.innerHTML = '');
+
+            // 2. Remove classes de acerto e reseta alvos
+            document.querySelectorAll(`#drop-column-1 .drop-target`).forEach(target => {
+                target.classList.remove('correct-match');
+            });
+
+            // 3. Embaralha e cria os elementos de imagem
+            const shuffledAnimals = shuffle([...animalData]);
+
+            shuffledAnimals.forEach((animal, index) => {
+                const dragItem = document.createElement('div');
+                dragItem.className = 'drag-item';
+                dragItem.id = `game1-animal-${index}`; // ID específico do jogo
+                dragItem.setAttribute('draggable', 'true');
+                dragItem.setAttribute('data-group', animal.group);
+                dragItem.classList.remove('matched-image'); 
+                dragItem.style.border = '3px solid #ffcc00'; 
+                dragItem.style.visibility = 'visible'; // Garante que está visível no reset
+
+                const img = document.createElement('img');
+                img.src = animal.file;
+                img.alt = animal.name;
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const span = this.parentElement.querySelector('span');
+                    if (span) span.textContent = `[Falta a imagem: ${animal.name}]`;
+                };
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = animal.name;
+
+                dragItem.appendChild(img);
+                dragItem.appendChild(nameSpan);
+                dragItemsContainer.appendChild(dragItem);
+            });
+
+            // 4. Adiciona os event listeners de drag
+            addDragListeners(1, totalItemsCount);
+        }
+
+        function startGame1() {
+            setupGame1(animals1, totalItems1);
+        }
+
+        // Adiciona os eventos de Arrastar e Soltar (Jogo 1)
+        function addDragListeners(gameId, totalItemsCount) {
+            const dragItemsContainer = document.getElementById(`drag-items-container-${gameId}`);
+            const dragItems = dragItemsContainer.querySelectorAll('.drag-item[draggable="true"]');
+            
+            // Seleciona os alvos atuais
+            const oldDropTargets = document.querySelectorAll(`#drop-column-1 .drop-target`);
+            
+            let draggedItem = null;
+
+            // Eventos de arrastar (nos itens)
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedItem = e.target;
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    e.target.style.opacity = '0.4';
+                });
+
+                item.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+            });
+
+            // Eventos de soltar (nos alvos)
+            // CORREÇÃO: Clonamos os elementos alvo para remover listeners acumulados de jogos anteriores
+            oldDropTargets.forEach(oldTarget => {
+                const target = oldTarget.cloneNode(true);
+                oldTarget.parentNode.replaceChild(target, oldTarget);
+
+                target.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    target.style.transform = 'scale(1.04)'; 
+                });
+
+                target.addEventListener('dragleave', (e) => {
+                    target.style.transform = 'scale(1)'; 
+                });
+
+                target.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    target.style.transform = 'scale(1)'; 
+                    
+                    if (!gameActive || currentGameId !== gameId) return; 
+
+                    const itemId = e.dataTransfer.getData('text/plain');
+                    const droppedItem = document.getElementById(itemId);
+                    
+                    // Verifica se o item existe e se ainda é arrastável (evita duplicação)
+                    if (droppedItem && droppedItem.getAttribute('draggable') === 'true') {
+                        const droppedItemGroup = droppedItem.getAttribute('data-group');
+                        const targetGroup = target.getAttribute('data-target');
+
+                        if (droppedItemGroup === targetGroup) {
+                            // Acerto!
+                            // Desativa imediatamente para evitar múltiplos drops
+                            droppedItem.setAttribute('draggable', 'false');
+                            
+                            currentScore++;
+                            matchedItems++;
+                            document.getElementById(`current-score-${gameId}`).textContent = currentScore;
+
+                            // Lógica de Movimentação para a Caixa
+                            droppedItem.style.visibility = 'hidden'; // Esconde o original
+                            
+                            // Cria a miniatura dentro da caixa
+                            const miniItem = document.createElement('div');
+                            miniItem.className = 'mini-animal-item';
+                            // Clona o conteúdo interno (imagem e texto)
+                            miniItem.innerHTML = droppedItem.innerHTML;
+                            
+                            // Adiciona ao container correto dentro do alvo
+                            const contentBox = target.querySelector('.drop-target-content');
+                            contentBox.appendChild(miniItem);
+
+                            // Feedback visual no alvo
+                            target.classList.add('correct-match');
+                            setTimeout(() => target.classList.remove('correct-match'), 500);
+
+                            if (matchedItems === totalItemsCount) {
+                                // Exibe modal de parabéns
+                                showEndGameModal(totalItemsCount);
+                                gameActive = false;
+                            }
+                        } else {
+                            // Erro - feedback visual de erro
+                            droppedItem.style.transition = 'transform 0.1s, border-color 0.1s';
+                            droppedItem.style.border = '3px solid #dc3545'; 
+
+                            setTimeout(() => {
+                                // Só restaura a borda se o item ainda não foi movido corretamente
+                                if (droppedItem.getAttribute('draggable') === 'true') {
+                                    droppedItem.style.border = '3px solid #ffcc00';
+                                }
+                                droppedItem.style.transition = 'transform 0.2s, box-shadow 0.2s';
+                            }, 500);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // --- LÓGICA DO JOGO 2 (STORY DRAG & DROP - SILVESTRES/DOMÉSTICOS) ---
+
+        function startGame2() {
+            currentGameId = 2;
+            showScreen('game2-view');
+            gameActive = true;
+            
+            // 1. Reinicializa o estado do jogo
+            currentScore = 0;
+            matchedItems = 0;
+            currentStoryIndex2 = 0;
+            document.getElementById('current-score-2').textContent = currentScore;
+            // Atualiza placar para 10 perguntas
+            document.querySelector('#score-board-2').innerHTML = `Pontos: <span id="current-score-2">0</span> / ${totalStories2}`;
+            
+            // 2. Re-ativa as palavras para arrastar e reseta cores/opacidade
+            document.querySelectorAll('#draggable-options-2 .drag-word').forEach(word => {
+                word.setAttribute('draggable', 'true');
+                word.style.opacity = '1';
+                word.style.pointerEvents = 'auto';
+            });
+            
+            // 3. Embaralha as histórias e carrega a primeira (garante randomização a cada início)
+            stories2.sort(() => Math.random() - 0.5); 
+            loadStory2();
+        }
+
+        function loadStory2() {
+            const storyContainer = document.getElementById('current-story-text-2');
+            const imageElement = document.getElementById('current-animal-image-2');
+            
+            storyContainer.classList.remove('correct-answer', 'wrong-answer');
+            
+            if (currentStoryIndex2 < totalStories2) {
+                const storyData = stories2[currentStoryIndex2];
+                
+                // Atualiza a imagem do animal
+                imageElement.src = storyData.file;
+                imageElement.alt = storyData.animal;
+                imageElement.style.display = 'block';
+
+                // Monta a frase com o placeholder para o drop
+                const blankHtml = `<span class="drop-blank" data-answer="${storyData.type}" data-filled="false" id="blank-2-${currentStoryIndex2}"></span>`;
+                
+                // Texto: O **Animal**, [dica]. Por isso, ele é um animal: [BLANK].
+                const htmlText = `O <b>${storyData.animal}</b>, ${storyData.hint} Por isso, ele é um animal: ${blankHtml}.`;
+                
+                storyContainer.innerHTML = htmlText;
+                
+                // Adiciona event listeners de drag/drop aos blanks gerados
+                addStoryDragDropListeners(2);
+            } else {
+                // Fim do jogo
+                imageElement.style.display = 'none';
+                storyContainer.innerHTML = "FIM! Todas as histórias foram completadas!";
+                gameActive = false;
+                showEndGameModal(totalStories2);
+            }
+        }
+        
+        // --- JOGO 3: STORY DRAG & DROP (PRODUTOS DOS ANIMAIS) ---
+
+        function startGame3() {
+            currentGameId = 3;
+            showScreen('game3-view');
+            gameActive = true;
+            
+            // 1. Reinicializa o estado do jogo
+            currentScore = 0;
+            // Cria a fila de histórias não respondidas e embaralha
+            unansweredStories3 = shuffle([...productsData3]);
+            
+            document.getElementById('current-score-3').textContent = currentScore;
+            // Atualiza placar para 11 lacunas
+            document.querySelector('#score-board-3').innerHTML = `Pontos: <span id="current-score-3">0</span> / ${totalGaps3}`;
+            
+            // 2. Carrega a primeira história da fila
+            loadStory3();
+        }
+
+        function loadStory3() {
+            const storyContainer = document.getElementById('current-story-text-3');
+            const imageElement = document.getElementById('current-animal-image-3');
+            const draggableOptionsContainer = document.getElementById('draggable-options-3');
+            
+            storyContainer.classList.remove('correct-answer', 'wrong-answer');
+            
+            if (unansweredStories3.length > 0) {
+                // Pega a primeira história da fila
+                const storyData = unansweredStories3[0];
+                
+                // 1. Atualiza a imagem do animal
+                imageElement.src = storyData.file;
+                imageElement.alt = storyData.animal;
+                imageElement.style.display = 'block';
+
+                // 2. Prepara a história: substitui [Produto] por lacunas arrastáveis
+                let htmlText = storyData.story;
+                // Usamos o nome do animal como ID da história para as lacunas
+                const uniqueStoryId = storyData.animal.replace(/ /g, '-'); 
+
+                storyData.products.forEach((product, index) => {
+                    const blankHtml = `<span class="drop-blank drop-blank-3" data-answer="${product}" data-filled="false" data-story="${uniqueStoryId}" id="blank-3-${uniqueStoryId}-${index}"></span>`;
+                    // Substitui a primeira ocorrência do produto [Produto] pelo blank
+                    htmlText = htmlText.replace(`[${product}]`, blankHtml);
+                });
+                storyContainer.innerHTML = htmlText;
+                
+                // 3. Gera e embaralha os produtos arrastáveis (lista completa)
+                draggableOptionsContainer.innerHTML = '';
+                shuffle([...allProducts]).forEach(product => {
+                    const dragWord = document.createElement('div');
+                    dragWord.className = 'drag-word';
+                    dragWord.setAttribute('draggable', 'true');
+                    dragWord.setAttribute('data-word', product);
+                    dragWord.textContent = product;
+                    dragWord.id = `drag-3-${product.replace(/ /g, '-')}`; 
+                    draggableOptionsContainer.appendChild(dragWord);
+                });
+                
+                // 4. Adiciona event listeners de drag/drop aos blanks e palavras
+                addStoryDragDropListeners(3);
+
+            } else {
+                // Fim do jogo (todas as histórias respondidas)
+                imageElement.style.display = 'none';
+                storyContainer.innerHTML = "FIM! Todas as histórias foram completadas!";
+                gameActive = false;
+                showEndGameModal(totalGaps3);
+            }
+        }
+        
+        // Função para pular a história atual e colocá-la no final da fila (Jogo 3)
+        function skipStory3() {
+            if (!gameActive || currentGameId !== 3 || unansweredStories3.length <= 1) {
+                // Se só tiver uma história, não faz sentido pular
+                return;
+            }
+            
+            // 1. Move a história atual (unansweredStories3[0]) para o final da fila.
+            const skippedStory = unansweredStories3.shift();
+            unansweredStories3.push(skippedStory);
+
+            // 2. Carrega a próxima história (que agora está na posição 0)
+            loadStory3();
+        }
+
+        // --- LÓGICA COMPARTILHADA DRAG & DROP PARA JOGO 2 E JOGO 3 ---
+
+        function checkStoryCompletion(gameId) {
+            let currentStoryId;
+            let blanks;
+
+            if (gameId === 2) {
+                currentStoryId = currentStoryIndex2;
+                blanks = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-filled="false"]`);
+            } else if (gameId === 3) {
+                // Jogo 3: o ID da história é o nome do animal da história na posição [0] da fila
+                if (unansweredStories3.length === 0) return; 
+                currentStoryId = unansweredStories3[0].animal.replace(/ /g, '-');
+                // Busca blanks pela data-story, que é o nome do animal
+                blanks = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-filled="false"]`);
+            } else {
+                return;
+            }
+            
+            // Se não sobrar nenhum blank (blanks.length === 0), a história está completa
+            if (blanks.length === 0) {
+                 setTimeout(() => {
+                    if (gameId === 2) {
+                        currentStoryIndex2++;
+                        loadStory2();
+                    } else if (gameId === 3) {
+                        // Remove a história completa da fila e carrega a próxima
+                        unansweredStories3.shift(); 
+                        loadStory3();
+                    }
+                 }, 500);
+            }
+        }
+        
+        function addStoryDragDropListeners(gameId) {
+            const blanks = (gameId === 2) ? 
+                           document.querySelectorAll('#story-container-2 .drop-blank') : 
+                           document.querySelectorAll('#story-container-3 .drop-blank');
+            const dragWords = (gameId === 2) ? 
+                              document.querySelectorAll('#draggable-options-2 .drag-word') : 
+                              document.querySelectorAll('#draggable-options-3 .drag-word');
+            
+            // Drag Start nas palavras
+            dragWords.forEach(word => {
+                word.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.getAttribute('data-word'));
+                    e.target.style.opacity = '0.7';
+                });
+                word.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+            });
+            
+            // Drop Targets nos blanks
+            blanks.forEach(blank => {
+                blank.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (blank.getAttribute('data-filled') === 'false') {
+                        blank.classList.add('drag-over');
+                    }
+                });
+                
+                blank.addEventListener('dragleave', (e) => {
+                    blank.classList.remove('drag-over');
+                });
+                
+                blank.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    blank.classList.remove('drag-over');
+                    
+                    if (blank.getAttribute('data-filled') === 'true' || !gameActive || currentGameId !== gameId) return; 
+
+                    const droppedWord = e.dataTransfer.getData('text/plain');
+                    const requiredAnswer = blank.getAttribute('data-answer');
+                    
+                    if (droppedWord === requiredAnswer) {
+                        // Acerto
+                        currentScore++;
+                        const scoreId = (gameId === 2) ? 'current-score-2' : 'current-score-3';
+                        document.getElementById(scoreId).textContent = currentScore;
+                        
+                        blank.textContent = droppedWord;
+                        blank.classList.add('correct');
+                        blank.setAttribute('data-filled', 'true');
+                        
+                        // Oculta a palavra arrastada no Jogo 3 (para forçar o uso único na história ATUAL)
+                        if (gameId === 3) {
+                            const originalDragWord = document.getElementById(`drag-3-${droppedWord.replace(/ /g, '-')}`);
+                            
+                            // Verifica se há outros blanks que precisam desta mesma palavra na história atual
+                            const currentStoryId = unansweredStories3[0].animal.replace(/ /g, '-');
+                            const remainingBlanksForWord = document.querySelectorAll(`.drop-blank[data-story="${currentStoryId}"][data-answer="${droppedWord}"][data-filled="false"]`);
+
+                            if (originalDragWord && remainingBlanksForWord.length === 0) {
+                                // Se NÃO houver mais blanks que precisem desta palavra NESTA história, desativa a palavra
+                                originalDragWord.style.pointerEvents = 'none';
+                                originalDragWord.style.opacity = '0.3';
+                                originalDragWord.setAttribute('draggable', 'false');
+                            }
+                        }
+
+                        // Verifica se a história está completa (e carrega a próxima)
+                        checkStoryCompletion(gameId);
+                        
+                    } else {
+                        // Erro - feedback visual de erro no blank (Shake)
+                        blank.style.animation = 'shake 0.3s';
+                        setTimeout(() => {
+                            blank.style.animation = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        }
+        
+        // --- MODAL DE FIM DE JOGO ---
+        function showEndGameModal(totalItems) {
+            const message = document.createElement('div');
+            message.innerHTML = `
+                <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:9999;">
+                    <div style="background:#fff; padding:30px; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.5); max-width: 90%; text-align: center;">
+                        <h3 style="color:#28a745; font-size:2em; margin-top:0;">🎉 Parabéns!</h3>
+                        <p style="font-size:1.2em;">Você acertou ${currentScore} de ${totalItems} questões!</p>
+                        <button onclick="this.parentElement.parentElement.remove(); showMenu();" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; margin-top:10px;">Voltar ao Menu Principal</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(message);
+        }
+        
+        
+        // --- LÓGICA DO JOGO 4: TRANSPORTES E PLACAS (Integrado) ---
+        
+        function startGame4() {
+            currentGameId = 4;
+            showScreen('game4-view');
+            // Chama a função interna do Jogo 4 para garantir que ele comece no menu interno.
+            voltarAoMenuJ4(); 
+        }
+
+        function voltarAoMenuJ4() {
+            document.getElementById('menu-inicial-4').style.display = 'block';
+            document.getElementById('tela-jogo-4').style.display = 'none';
+            document.getElementById('tela-fim-4').style.display = 'none';
+        }
+
+        function iniciarModoJ4(modo) {
+            modoAtual4 = modo;
+            pontuacao4 = 0;
+            indiceAtual4 = 0;
+
+            // Seleciona e embaralha as perguntas
+            if (modo === 'transportes') {
+                perguntasAtuais4 = shuffle(dadosTransportes4);
+                document.getElementById('titulo-modo-4').innerText = "Modo: Veículos 🚗";
+            } else {
+                perguntasAtuais4 = shuffle(dadosPlacas4);
+                document.getElementById('titulo-modo-4').innerText = "Modo: Placas 🛑";
+            }
+
+            // Troca de tela
+            document.getElementById('menu-inicial-4').style.display = 'none';
+            document.getElementById('tela-jogo-4').style.display = 'block';
+            document.getElementById('tela-fim-4').style.display = 'none';
+
+            renderizarPerguntaJ4();
+        }
+
+        function renderizarPerguntaJ4() {
+            const dados = perguntasAtuais4[indiceAtual4];
+            
+            // Texto
+            document.getElementById('texto-pergunta-4').innerText = dados.p;
+            
+            // Imagem
+            const imgEl = document.getElementById('imagem-jogo-4');
+            if (modoAtual4 === 'placas') {
+                // No modo placas, a imagem faz parte da pergunta
+                imgEl.src = dados.img;
+                imgEl.style.display = 'block';
+            } else {
+                // No modo transportes, a imagem é "surpresa" (aparece só na resposta), então escondemos agora
+                imgEl.style.display = 'none';
+                imgEl.src = dados.img; // Já deixamos carregada para o feedback
+            }
+
+            // Limpa estado anterior
+            document.getElementById('feedback-4').innerText = "";
+            document.getElementById('btn-proxima-4').style.display = 'none';
+            const divBotoes = document.getElementById('lista-botoes-4');
+            divBotoes.innerHTML = "";
+
+            // Gera botões embaralhados
+            const alternativas = shuffle(dados.alts);
+            
+            alternativas.forEach(alt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-resposta-4';
+                btn.innerText = alt;
+                // Usa função com sufixo J4
+                btn.onclick = function() { checarRespostaJ4(alt, dados.r, btn); }; 
+                divBotoes.appendChild(btn);
+            });
+        }
+
+        function checarRespostaJ4(escolha, correta, elementoBotao) {
+            // Bloqueia todos os botões
+            const todosBotoes = document.querySelectorAll('.btn-resposta-4');
+            todosBotoes.forEach(b => b.disabled = true);
+
+            const feedback = document.getElementById('feedback-4');
+
+            if (escolha === correta) {
+                pontuacao4++;
+                feedback.innerHTML = "<span style='color:green'>🎉 Muito bem! Acertou!</span>";
+                elementoBotao.style.backgroundColor = "#c8e6c9"; // Verde claro
+                elementoBotao.style.borderColor = "green";
+            } else {
+                feedback.innerHTML = "<span style='color:red'>❌ Ops! A resposta certa era: " + correta + "</span>";
+                elementoBotao.style.backgroundColor = "#ffcdd2"; // Vermelho claro
+                elementoBotao.style.borderColor = "red";
+            }
+
+            // Se for modo transportes, mostra a imagem do veículo agora
+            if (modoAtual4 === 'transportes') {
+                const imgEl = document.getElementById('imagem-jogo-4');
+                imgEl.style.display = 'block';
+            }
+
+            document.getElementById('btn-proxima-4').style.display = 'inline-block';
+        }
+
+        function proximaPerguntaJ4() {
+            indiceAtual4++;
+            
+            if (indiceAtual4 < perguntasAtuais4.length) {
+                renderizarPerguntaJ4();
+            } else {
+                finalizarJogoJ4();
+            }
+        }
+
+        function finalizarJogoJ4() {
+            document.getElementById('tela-jogo-4').style.display = 'none';
+            document.getElementById('tela-fim-4').style.display = 'block';
+
+            const total = perguntasAtuais4.length;
+            document.getElementById('texto-pontuacao-4').innerText = `Você acertou ${pontuacao4} de ${total}!`;
+
+            let msg = "";
+            if (pontuacao4 === total) msg = "Uau! Você sabe tudo de trânsito! 🏆";
+            else if (pontuacao4 > total / 2) msg = "Mandou muito bem! Continue assim! 👏";
+            else msg = "Foi legal! Que tal tentar de novo para aprender mais? 😉";
+            
+            document.getElementById('mensagem-final-4').innerText = msg;
+        }
+
+        // --- LÓGICA DO JOGO 5: ORIGEM DOS MATERIAIS ---
+
+        function startGame5() {
+            currentGameId = 5;
+            showScreen('game5-view');
+            gameActive = true;
+            
+            pontuacao5 = 0;
+            selectedMaterialId5 = null;
+            
+            // Embaralha e clona o array de materiais para o novo jogo
+            materiaisDisponiveis5 = shuffle([...materiais5]);
+            
+            document.getElementById('pontuacao-5').innerText = pontuacao5;
+            document.getElementById('total-pares-5').innerText = materiais5.length; // 8 pares
+            
+            // Exibe a interface do jogo e esconde o resultado
+            document.getElementById('resultado-5').classList.add('esconder');
+            document.getElementById('jogo5-interface').classList.remove('esconder');
+            
+            montarGradeMateriais5();
+            montarGradeCategorias5();
+        }
+
+        function montarGradeMateriais5() {
+            const grid = document.getElementById('materials-grid-5');
+            grid.innerHTML = '';
+            materiaisDisponiveis5.forEach(material => {
+                const div = document.createElement('div');
+                div.classList.add('material-item-5');
+                div.setAttribute('data-id', material.id);
+                div.setAttribute('data-category', material.category);
+                div.innerHTML = `
+                    <img src="${material.imageUrl}" alt="${material.imageAlt}" onerror="this.onerror=null; this.src='https://placehold.co/100x80/aaaaaa/000000?text=${material.name.substring(0,6)}';">
+                    <p style="font-size:0.9em; font-weight:600;">${material.name}</p>
+                `;
+                div.addEventListener('click', selecionarMaterial5);
+                grid.appendChild(div);
+            });
+        }
+
+        function montarGradeCategorias5() {
+            const grid = document.getElementById('categories-grid-5');
+            grid.innerHTML = '';
+            
+            categorias5.forEach(categoria => {
+                const div = document.createElement('div');
+                div.classList.add('category-item-5');
+                div.setAttribute('data-value', categoria.value);
+                div.innerHTML = `
+                    ${categoria.name}
+                    <div class="category-content-5"></div>
+                `;
+                div.addEventListener('click', tentarAssociacao5);
+                grid.appendChild(div);
+            });
+        }
+
+        function selecionarMaterial5(e) {
+            // Remove a seleção anterior
+            document.querySelectorAll('.material-item-5.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            const materialItem = e.currentTarget;
+            
+            // Se o material já foi pareado, ignore o clique
+            if (materialItem.classList.contains('matched')) return;
+
+            // Seleciona o novo material
+            materialItem.classList.add('selected');
+            selectedMaterialId5 = materialItem.getAttribute('data-id');
+        }
+
+        function tentarAssociacao5(e) {
+            if (selectedMaterialId5 === null) return;
+
+            const categoriaItem = e.currentTarget;
+            const categoriaValue = categoriaItem.getAttribute('data-value');
+            
+            // Encontra o elemento do material selecionado no DOM
+            const materialElement = document.querySelector(`.material-item-5[data-id='${selectedMaterialId5}']`);
+            if(!materialElement) return;
+            
+            const materialCategory = materialElement.getAttribute('data-category');
+
+            if (materialElement.classList.contains('matched')) return;
+
+            if (materialCategory === categoriaValue) {
+                // MATCH CORRETO
+                pontuacao5++;
+                document.getElementById('pontuacao-5').innerText = pontuacao5;
+                
+                // Clona o conteúdo visual
+                const materialContent = materialElement.innerHTML;
+                const movedItem = document.createElement('div');
+                movedItem.innerHTML = materialContent;
+                movedItem.classList.add('material-inside-box-5');
+
+                const contentBox = categoriaItem.querySelector('.category-content-5');
+                if (contentBox) contentBox.appendChild(movedItem);
+
+                materialElement.classList.add('matched');
+                materialElement.classList.remove('selected');
+                
+                categoriaItem.classList.add('success-pulse');
+                setTimeout(() => {
+                    categoriaItem.classList.remove('success-pulse');
+                }, 300);
+                
+                selectedMaterialId5 = null; 
+                
+                if (pontuacao5 === materiais5.length) { 
+                    setTimeout(() => {
+                        document.getElementById('jogo5-interface').classList.add('esconder');
+                        document.getElementById('resultado-5').classList.remove('esconder');
+                        document.getElementById('pontuacao-final-5').innerText = `Você formou todos os ${pontuacao5} pares! Excelente trabalho!`;
+                    }, 500);
+                }
+
+            } else {
+                // MATCH INCORRETO
+                categoriaItem.animate([
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(0px)' }
+                ], { duration: 300 });
+
+                materialElement.classList.remove('selected');
+                selectedMaterialId5 = null;
+            }
+        }
+        
+        // --- LÓGICA DO JOGO 6: ANTÔNIMOS ---
+        
+        function startGame6() {
+            currentGameId = 6;
+            showScreen('game6-view');
+            gameActive = true;
+            
+            // Embaralha e seleciona as questões
+            questions6 = shuffle([...antonymsData]);
+            currentQIndex6 = 0;
+            
+            // Update HUD
+            document.getElementById('total-q-6').innerText = questions6.length;
+            
+            loadQuestion6();
+        }
+
+        function loadQuestion6() {
+            if (currentQIndex6 >= questions6.length) {
+                // Fim de jogo
+                showEndGameModal(questions6.length);
+                return;
+            }
+
+            document.getElementById('current-q-6').innerText = currentQIndex6 + 1;
+            const data = questions6[currentQIndex6];
+            const feedbackEl = document.getElementById('feedback-6');
+            feedbackEl.innerText = "";
+            
+            // 1. Mostrar Frase
+            const sentenceContainer = document.getElementById('sentence-text-6');
+            // Substitui ______ por uma área dropável
+            const sentenceHtml = data.s.replace('______', `<span id="drop-zone-6" class="drop-zone-6">ARRASTE AQUI</span>`);
+            sentenceContainer.innerHTML = sentenceHtml;
+            
+            // 2. Mostrar Opções
+            const optionsContainer = document.getElementById('options-container-6');
+            optionsContainer.innerHTML = '';
+            
+            let optionsToShow = shuffle([...data.d]); 
+            
+            optionsToShow.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'word-option-6';
+                div.innerText = word;
+                div.setAttribute('draggable', 'true');
+                div.id = 'opt-6-' + word;
+                
+                // --- Desktop Drag Events ---
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', word); // Formato corrigido
+                    e.target.style.opacity = '0.5';
+                });
+                div.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+                
+                // --- Mobile Touch Events (Correção para celular) ---
+                div.addEventListener('touchstart', (e) => {
+                   e.target.style.opacity = '0.5';
+                   // Previne a rolagem da tela enquanto arrasta este item específico
+                   document.body.style.overflow = 'hidden'; 
+                }, {passive: false});
+
+                div.addEventListener('touchend', (e) => {
+                   e.target.style.opacity = '1';
+                   document.body.style.overflow = 'auto'; // Restaura rolagem
+                   
+                   // Lógica para detectar onde soltou o dedo
+                   const touch = e.changedTouches[0];
+                   const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                   
+                   // Verifica se soltou em cima da zona correta
+                   if (element && (element.id === 'drop-zone-6' || element.classList.contains('drop-zone-6'))) {
+                       checkAnswer6(word);
+                   }
+                });
+
+                div.addEventListener('touchmove', (e) => {
+                    e.preventDefault(); // Essencial para o mobile não rolar a tela
+                }, {passive: false});
+                
+                // Click Fallback (Opção de clique simples)
+                div.addEventListener('click', () => checkAnswer6(word));
+
+                optionsContainer.appendChild(div);
+            });
+            
+            // 3. Drop Zone Events
+            const dropZone = document.getElementById('drop-zone-6');
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('hovered');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('hovered');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('hovered');
+                const word = e.dataTransfer.getData('text/plain'); // Formato corrigido
+                checkAnswer6(word);
+            });
+        }
+        
+        function checkAnswer6(selectedWord) {
+            const data = questions6[currentQIndex6];
+            const feedbackEl = document.getElementById('feedback-6');
+            const dropZone = document.getElementById('drop-zone-6');
+            
+            // Previne múltiplos cliques
+            if (dropZone.classList.contains('correct')) return;
+
+            if (selectedWord === data.a) {
+                // Correto
+                dropZone.innerText = selectedWord;
+                dropZone.classList.add('correct');
+                feedbackEl.innerHTML = "<span style='color:green'>Muito bem! " + data.w + " é o contrário de " + data.a + "!</span>";
+                
+                // Som de acerto ou delay
+                setTimeout(() => {
+                    currentScore = currentQIndex6 + 1; // Score hack simples
+                    currentQIndex6++;
+                    loadQuestion6();
+                }, 1500);
+            } else {
+                // Errado
+                feedbackEl.innerHTML = "<span style='color:red'>Tente novamente!</span>";
+                // Efeito visual de erro
+                dropZone.style.backgroundColor = '#ffcdd2';
+                setTimeout(() => {
+                    dropZone.style.backgroundColor = '#f3e5f5';
+                }, 500);
+            }
+        }
+
+        // --- LÓGICA DO JOGO 7: SINÔNIMOS ---
+
+        function startGame7() {
+            currentGameId = 7;
+            showScreen('game7-view');
+            gameActive = true;
+            
+            currentScore7 = 0;
+            currentScore = 0; // CORREÇÃO: Reseta a pontuação global para o modal
+            selectedCardCol1_7 = null;
+            document.getElementById('current-score-7').innerText = currentScore7;
+            
+            // 1. Preparar os dados
+            // Cria uma lista de pares com ID e Cor
+            const gameData = synonymsData.map((pair, index) => ({
+                id: index,
+                wordA: pair.a,
+                wordB: pair.b,
+                color: synonymColors[index % synonymColors.length]
+            }));
+            
+            // 2. Embaralhar listas separadas para coluna 1 e coluna 2
+            const col1Items = shuffle([...gameData]); // Cópia embaralhada para col 1
+            const col2Items = shuffle([...gameData]); // Cópia embaralhada para col 2
+            
+            // 3. Renderizar Coluna 1 (Colorida)
+            const col1Container = document.getElementById('synonyms-col-1');
+            col1Container.innerHTML = '<h3>Palavras</h3>'; // Reset header
+            
+            col1Items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'synonym-card';
+                card.style.backgroundColor = item.color; // Já nasce colorida
+                card.innerText = item.wordA;
+                card.dataset.id = item.id;
+                card.dataset.color = item.color;
+                
+                card.onclick = () => handleCol1Click7(card);
+                col1Container.appendChild(card);
+            });
+            
+            // 4. Renderizar Coluna 2 (Sem cor inicial)
+            const col2Container = document.getElementById('synonyms-col-2');
+            col2Container.innerHTML = '<h3>Sinônimos</h3>'; // Reset header
+            
+            col2Items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'synonym-card uncolored'; // Classe para estilo cinza
+                card.innerText = item.wordB;
+                card.dataset.id = item.id;
+                card.dataset.targetColor = item.color; // Guarda a cor que deve ter
+                
+                card.onclick = () => handleCol2Click7(card);
+                col2Container.appendChild(card);
+            });
+        }
+
+        function handleCol1Click7(card) {
+            // Se já está pareado, ignora
+            if (card.classList.contains('matched')) return;
+            
+            // Remove seleção anterior visual
+            const allCol1 = document.querySelectorAll('#synonyms-col-1 .synonym-card');
+            allCol1.forEach(c => c.classList.remove('selected'));
+            
+            // Seleciona o novo
+            card.classList.add('selected');
+            selectedCardCol1_7 = {
+                id: card.dataset.id,
+                color: card.dataset.color,
+                element: card
+            };
+        }
+
+        function handleCol2Click7(card) {
+            // Se já está pareado ou não tem seleção na col 1, ignora
+            if (card.classList.contains('matched') || !selectedCardCol1_7) return;
+            
+            const selectedId = selectedCardCol1_7.id;
+            const targetId = card.dataset.id;
+            
+            if (selectedId === targetId) {
+                // MATCH!
+                // 1. Aplica a cor
+                card.style.backgroundColor = selectedCardCol1_7.color;
+                card.classList.remove('uncolored');
+                
+                // 2. Marca ambos como pareados
+                card.classList.add('matched');
+                selectedCardCol1_7.element.classList.add('matched');
+                selectedCardCol1_7.element.classList.remove('selected');
+                
+                // 3. Efeito visual extra (opcional)
+                
+                // 4. Reset state e Score
+                selectedCardCol1_7 = null;
+                currentScore7++;
+                currentScore = currentScore7; // CORREÇÃO: Atualiza a pontuação global usada no modal
+                document.getElementById('current-score-7').innerText = currentScore7;
+                
+                if (currentScore7 === 10) {
+                    showEndGameModal(10);
+                }
+                
+            } else {
+                // ERRO
+                // Feedback visual de erro (chacoalhar)
+                card.classList.add('shake-animation');
+                setTimeout(() => {
+                    card.classList.remove('shake-animation');
+                }, 400);
+            }
+        }
+
+        // --- LÓGICA DO JOGO 8: PRONOMES (DRAG & DROP) ---
+        function startGame8() {
+            currentGameId = 8;
+            showScreen('game8-view');
+            gameActive = true;
+            
+            questions8 = shuffle([...pronounsRealData]); // Usa a lista corrigida
+            currentQIndex8 = 0;
+            currentScore = 0;
+            
+            document.getElementById('total-q-8').innerText = questions8.length;
+            document.getElementById('completed-list-8').innerHTML = ''; // Limpa a lista
+            
+            setupDraggables8(); 
+            loadQuestion8();
+        }
+
+        function setupDraggables8() {
+            const draggables = document.querySelectorAll('#pronoun-bank-8 .drag-pronoun');
+            
+            draggables.forEach(item => {
+                const word = item.getAttribute('data-word');
+                
+                // Desktop
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', word);
+                    e.target.style.opacity = '0.5';
+                });
+                item.addEventListener('dragend', (e) => {
+                    e.target.style.opacity = '1';
+                });
+
+                // Mobile
+                item.addEventListener('touchstart', (e) => {
+                   e.target.style.opacity = '0.5';
+                   document.body.style.overflow = 'hidden'; 
+                }, {passive: false});
+
+                item.addEventListener('touchend', (e) => {
+                   e.target.style.opacity = '1';
+                   document.body.style.overflow = 'auto'; 
+                   
+                   const touch = e.changedTouches[0];
+                   const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                   
+                   if (element && element.classList.contains('drop-zone-8')) {
+                       // Passa o elemento alvo e a palavra
+                       checkDrop8(element, word);
+                   }
+                });
+
+                item.addEventListener('touchmove', (e) => {
+                    e.preventDefault(); 
+                }, {passive: false});
+            });
+        }
+
+        function loadQuestion8() {
+            if (currentQIndex8 >= questions8.length) {
+                showEndGameModal(questions8.length);
+                return;
+            }
+
+            document.getElementById('current-q-8').innerText = currentQIndex8 + 1;
+            const data = questions8[currentQIndex8];
+            const feedbackEl = document.getElementById('feedback-8');
+            feedbackEl.innerText = "";
+            
+            // Renderiza a frase com Drop Zones
+            const sentenceBox = document.getElementById('sentence-text-8');
+            let htmlSentence = data.s;
+            
+            // Substitui todos os [BLANK] por zonas de drop com índices
+            data.a.forEach((ans, index) => {
+                // Cria o HTML da zona de drop
+                const dropZoneHtml = `<span class="drop-zone-8" data-index="${index}" data-answer="${ans}">___</span>`;
+                // Substitui apenas a primeira ocorrência de [BLANK]
+                htmlSentence = htmlSentence.replace('[BLANK]', dropZoneHtml);
+            });
+            
+            sentenceBox.innerHTML = htmlSentence;
+            
+            // Adiciona listeners nas novas drop zones
+            const dropZones = document.querySelectorAll('.drop-zone-8');
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    zone.classList.add('hovered');
+                });
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('hovered');
+                });
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('hovered');
+                    const word = e.dataTransfer.getData('text/plain');
+                    checkDrop8(zone, word);
+                });
+            });
+        }
+
+        function checkDrop8(zoneElement, droppedWord) {
+            // Se já estiver correto, não faz nada
+            if (zoneElement.classList.contains('correct-8')) return;
+
+            const correctAnswer = zoneElement.getAttribute('data-answer');
+            const feedbackEl = document.getElementById('feedback-8');
+
+            if (droppedWord === correctAnswer) {
+                // Acerto
+                zoneElement.innerText = droppedWord;
+                zoneElement.classList.add('correct-8');
+                feedbackEl.innerHTML = "<span style='color:green'>Isso aí!</span>";
+                
+                checkSentenceCompletion8();
+            } else {
+                // Erro
+                feedbackEl.innerHTML = "<span style='color:red'>Tente outro pronome.</span>";
+                zoneElement.style.backgroundColor = '#ffcdd2';
+                setTimeout(() => {
+                    zoneElement.style.backgroundColor = '#f0fdfc';
+                }, 500);
+            }
+        }
+        
+        function checkSentenceCompletion8() {
+            const allZones = document.querySelectorAll('.drop-zone-8');
+            const correctZones = document.querySelectorAll('.correct-8');
+            
+            // Se todas as lacunas foram preenchidas corretamente
+            if (allZones.length === correctZones.length) {
+                currentScore++;
+                
+                // Adiciona à lista permanente
+                const data = questions8[currentQIndex8];
+                const list = document.getElementById('completed-list-8');
+                const newItem = document.createElement('li');
+                newItem.innerHTML = data.full; // Usa a versão completa formatada com negrito
+                list.appendChild(newItem);
+                
+                // Rola a lista para baixo para mostrar o item novo
+                const rightPanel = document.querySelector('.game8-right-panel');
+                rightPanel.scrollTop = rightPanel.scrollHeight;
+
+                // Avança para próxima pergunta
+                setTimeout(() => {
+                    currentQIndex8++;
+                    loadQuestion8();
+                }, 1500);
+            }
+        }
+
+        // Inicia o aplicativo mostrando o menu principal
+        window.onload = showMenu;
+    </script>
+</body>
+</html>
